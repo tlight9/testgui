@@ -1,0 +1,11 @@
+d0fa6ca0b7a9640f822eca46e57f781c  usr/bin/testgui
+a3b42cf26f0ca79a8dbfc838da31d039  usr/lib/python3/dist-packages/libtestgui/actions.py
+5c0e090442d9c4905edf100aa9a4e32a  usr/lib/python3/dist-packages/libtestgui/commands.py
+f4f9d74927b942881b80996a5da4528f  usr/lib/python3/dist-packages/libtestgui/dialogs.py
+3fc7a38f0405a0d04e227c61d5d4959d  usr/lib/python3/dist-packages/libtestgui/readini.py
+9aa34e955464ad539feaeec65a6f3864  usr/lib/python3/dist-packages/libtestgui/startup.py
+b15858ddedb399a979c8293a3d5ebd46  usr/lib/python3/dist-packages/libtestgui/status.py
+12932e06dbe6c359f9750f9b83530bfa  usr/lib/python3/dist-packages/libtestgui/utilities.py
+90869bf31739bdeb438e03cf54774198  usr/share/doc/testgui/changelog.gz
+c14ee650d15b13d205c180c587301f3b  usr/share/doc/testgui/copyright
+8bab8bf56d9f11268c0e25bff20c98d2  usr/share/man/man1/testgui.1.gz

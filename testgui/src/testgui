@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+import sys, os
+
+# disable cache usage must be before any local imports
+sys.dont_write_bytecode = True
+
+from functools import partial
+
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.uic import loadUi
+import linuxcnc as emc
+import hal
+
+from libtestgui import readini
+from libtestgui import startup
+from libtestgui import status
+
+class testgui(QMainWindow):
+	def __init__(self):
+		super().__init__()
+
+		if os.path.isdir('/usr/lib/libtestgui'):
+			self.lib_path = '/usr/lib/libflexgui'
+
+		for i in range(len(sys.argv)): # check if running from ini DISPLAY entry
+			if sys.argv[i].endswith('.ini'):
+				# self.ini_path path to ini file
+				self.ini_path = sys.argv[i]
+				self.inifile = emc.ini(sys.argv[i])
+				# self.config_path path to configuration
+				self.config_path = os.path.split(sys.argv[i])[0]
+				break
+		else: # no match was found
+			msg = ('Test GUI must be called from\n'
+			'the LinuxCNC ini file.')
+			dialogs.error_msg_ok(self, msg, 'Error')
+			sys.exit()
+
+		# connect to linuxcnc
+		self.status = emc.stat()
+		self.status.poll()
+		self.command = emc.command()
+		self.error = emc.error_channel()
+
+		# find and load the gui
+		gui_file = self.inifile.find('DISPLAY', 'GUI') or False
+		if gui_file: # gui is in the ini file
+			gui_path = os.path.join(os.path.dirname(self.status.ini_filename), gui_file)
+			loadUi(gui_path, self)
+
+		readini.read(self)
+		startup.find_children(self)
+		startup.setup_vars(self)
+		startup.setup_status(self)
+		startup.setup_enables(self)
+		startup.setup_actions(self)
+		startup.setup_buttons(self)
+		startup.setup_mdi_buttons(self)
+		startup.setup_jog(self)
+
+		self.exec_state = self.status.exec_state
+		self.interp_state = self.status.interp_state
+		self.interpreter_errcode = self.status.interpreter_errcode
+		self.motion_mode = self.status.motion_mode
+		self.motion_type = self.status.motion_type
+		self.state = self.status.state
+		self.task_mode = self.status.task_mode
+		self.task_state = self.status.task_state
+
+
+
+		# setup and start the status update timer every 0.01 second
+		self.update_timer = QTimer()
+		self.update_timer.timeout.connect(partial(status.update, self))
+		self.update_timer.start(10) # milliseconds
+
+
+		self.show()
+
+
+
+app = QApplication(sys.argv)
+window = testgui()
+sys.exit(app.exec())
+

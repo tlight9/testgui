@@ -1,0 +1,4 @@
+testgui/src/testgui usr/bin
+
+testgui/src/libtestgui/*.py usr/lib/python3/dist-packages/libtestgui
+

@@ -1,0 +1,11 @@
+Package: testgui
+Version: 0.0.1
+Architecture: amd64
+Maintainer: John Thornton <dev@gnipsel.com>
+Installed-Size: 49
+Depends: python3 (>= 3.6), python3-pyqt6, pyqt6-dev-tools
+Section: utils
+Priority: optional
+Description: LinuxCNC GUI
+ PyQt6 Python3 GUI.
+ Flexible GUI that can be built to suit you.
