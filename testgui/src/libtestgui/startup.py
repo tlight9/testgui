@@ -2,6 +2,7 @@
 from functools import partial
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
+from PyQt6.QtWidgets import QVBoxLayout
 from PyQt6.QtGui import QAction
 
 from libtestgui import actions
@@ -218,7 +219,6 @@ def setup_mdi_buttons(parent):
 
 def setup_jog(parent):
 	jog_buttons = []
-	print(parent.joints)
 	for i in range(parent.joints):
 		if f'jog_plus_pb_{i}' in parent.child_names:
 			jog_buttons.append(f'jog_plus_pb_{i}')
@@ -262,6 +262,15 @@ def setup_jog(parent):
 					f'> {item} < is not a valid unit and will not\n'
 					'be used. INCREMENTS must be comma seperated.')
 					dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+
+def setup_plot(parent):
+	if 'plot_widget' in parent.child_names:
+		# add the plotter to the container
+		from libflexgui import flexplot
+		parent.plotter = flexplot.emc_plot(parent)
+		layout = QVBoxLayout(parent.plot_widget)
+		layout.addWidget(parent.plotter)
+
 
 
 def setup_tools(parent):

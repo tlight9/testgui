@@ -81,7 +81,9 @@ class testgui(QMainWindow):
 		startup.setup_buttons(self)
 		startup.setup_mdi_buttons(self)
 		startup.setup_jog(self)
+		startup.setup_plot(self)
 
+		# get emc states
 		self.exec_state = self.status.exec_state
 		self.interp_state = self.status.interp_state
 		self.interpreter_errcode = self.status.interpreter_errcode
