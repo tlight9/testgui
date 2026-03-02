@@ -1,4 +1,4 @@
-import re
+import re, os
 
 
 
@@ -82,4 +82,25 @@ def is_valid_increment(parent, item): # need to return text ,data and suffix
 					return False, False, False
 	else: # not a valid increment
 		return False, False, False
+
+def update_mdi(parent):
+	if 'mdi_history_lw' in parent.child_names:
+		rows = parent.mdi_history_lw.count()
+		if rows > 0:
+			last_item = parent.mdi_history_lw.item(rows - 1).text().strip()
+		else:
+			last_item = ''
+		if last_item != parent.mdi_command_le.text():
+			parent.mdi_history_lw.addItem(parent.mdi_command_le.text())
+			path = os.path.dirname(parent.status.ini_filename)
+			mdi_file = os.path.join(path, 'mdi_history.txt')
+			mdi_codes = []
+			for index in range(parent.mdi_history_lw.count()):
+				mdi_codes.append(parent.mdi_history_lw.item(index).text())
+			with open(mdi_file, 'w') as f:
+				f.write('\n'.join(mdi_codes))
+		parent.mdi_command_le.setText('')
+
+
+
 

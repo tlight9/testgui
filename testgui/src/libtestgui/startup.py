@@ -1,3 +1,4 @@
+import os
 
 from functools import partial
 
@@ -127,10 +128,7 @@ def setup_enables(parent):
 		if f'home_pb_{i}' in parent.child_names:
 			parent.state_on_enabled.append(f'home_pb_{i}')
 
-
-
 def setup_status(parent):
-
 	# Actual Position labels no offsets
 	parent.status_position = {} # create an empty dictionary
 	for i, axis in enumerate(AXES):
@@ -177,7 +175,6 @@ def setup_status(parent):
 	#print(f'G92 Offset X {parent.status.g92_offset}')
 
 def setup_buttons(parent): # connect buttons to functions
-
 	if 'estop_pb' in parent.child_names:
 		parent.estop_pb.toggled.connect(partial(actions.action_estop, parent))
 		parent.estop_pb.setCheckable(True)
@@ -207,6 +204,27 @@ def setup_actions(parent): # setup menu actions
 		if key in parent.child_names:
 			getattr(parent, f'{key}').triggered.connect(partial(getattr(actions, f'{value}'), parent))
 
+def setup_mdi(parent):
+	# mdi_command_le is required to run mdi commands
+	# run_mdi_pb and mdi_history_lw are optional
+	#if set(['mdi_command_le', 'run_mdi_pb']).issubset(set(parent.child_names)):
+
+	if 'mdi_command_le' in parent.child_names:
+		parent.mdi_command_le.returnPressed.connect(partial(commands.run_mdi, parent))
+	if 'run_mdi_pb' in parent.child_names:
+		parent.run_mdi_pb.clicked.connect(partial(commands.run_mdi, parent))
+		parent.homed_enabled.append('run_mdi_pb')
+
+	if 'mdi_history_lw' in parent.child_names:
+		path = os.path.dirname(parent.status.ini_filename)
+		mdi_file = os.path.join(path, 'mdi_history.txt')
+		if os.path.exists(mdi_file): # load mdi history
+			with open(mdi_file, 'r') as f:
+				history_list = f.readlines()
+				for item in history_list:
+					parent.mdi_history_lw.addItem(item.strip())
+		parent.mdi_history_lw.itemSelectionChanged.connect(partial(commands.add_mdi, parent))
+
 def setup_mdi_buttons(parent):
 	for button in parent.findChildren(QPushButton):
 		if button.property('function') == 'mdi':
@@ -215,7 +233,6 @@ def setup_mdi_buttons(parent):
 				button.clicked.connect(partial(commands.mdi_button, parent))
 				parent.state_estop_disabled.append(name)
 				parent.homed_enabled.append(name)
-
 
 def setup_jog(parent):
 	jog_buttons = []

@@ -33,6 +33,20 @@ def unhome(parent):
 		if f'home_pb_{joint}' in parent.child_names:
 			getattr(parent, f'home_pb_{joint}').setEnabled(True)
 
+def run_mdi(parent):
+	mdi_command = parent.mdi_command_le.text()
+	if mdi_command:
+		print(f'mdi_command {mdi_command}')
+		if parent.status.task_state == emc.STATE_ON:
+			if parent.status.task_mode == emc.MODE_MANUAL:
+				parent.command.mode(emc.MODE_MDI)
+				parent.command.wait_complete()
+				parent.command.mdi(mdi_command)
+	else:
+		print('blank')
+
+def add_mdi(parent): # when you click on the mdi history list widget
+	parent.mdi_command_le.setText(f'{parent.mdi_history_lw.currentItem().text()}')
 
 def mdi_button(parent):
 	mdi_command = parent.sender().property('command')

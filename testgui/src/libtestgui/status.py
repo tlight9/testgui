@@ -4,6 +4,8 @@ from PyQt6.QtGui import QTextCursor
 
 import linuxcnc as emc
 
+from libtestgui import utilities
+
 EXEC_STATES = {1: 'EXEC_ERROR', 2: 'EXEC_DONE', 3: 'EXEC_WAITING_FOR_MOTION',
 	4: 'EXEC_WAITING_FOR_MOTION_QUEUE', 5: 'EXEC_WAITING_FOR_IO',
 	7: 'EXEC_WAITING_FOR_MOTION_AND_IO', 8: 'EXEC_WAITING_FOR_DELAY',
@@ -43,8 +45,9 @@ def update(parent):
 		if 'exec_state_lb' in parent.child_names: # update the label
 			parent.exec_state_lb.setText(EXEC_STATES[parent.status.exec_state])
 		changed = True
-		if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
-			parent.command.mode(emc.MODE_MANUAL)
+		# FIXME is this needed here?
+		#if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
+		#	parent.command.mode(emc.MODE_MANUAL)
 
 		parent.exec_state = parent.status.exec_state
 
@@ -100,8 +103,10 @@ def update(parent):
 		if 'state_lb' in parent.child_names: # update the label
 			parent.state_lb.setText(STATES[parent.status.state])
 		changed = True
+		# this is needed for MDI commands that use motion
 		if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
 			parent.command.mode(emc.MODE_MANUAL)
+			utilities.update_mdi(parent)
 
 		parent.state = parent.status.state
 
@@ -112,8 +117,10 @@ def update(parent):
 		if 'task_mode_lb' in parent.child_names: # update the label
 			parent.task_mode_lb.setText(TASK_MODES[parent.status.task_mode])
 		changed = True
+		# this is needed for MDI commands that do not use motion
 		if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
 			parent.command.mode(emc.MODE_MANUAL)
+			utilities.update_mdi(parent)
 
 		parent.task_mode = parent.status.task_mode
 

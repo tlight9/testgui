@@ -79,6 +79,7 @@ class testgui(QMainWindow):
 		startup.setup_enables(self)
 		startup.setup_actions(self)
 		startup.setup_buttons(self)
+		startup.setup_mdi(self)
 		startup.setup_mdi_buttons(self)
 		startup.setup_jog(self)
 		startup.setup_plot(self)
