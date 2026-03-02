@@ -1,6 +1,7 @@
 import os
 
 from functools import partial
+from collections import deque
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
 from PyQt6.QtWidgets import QLabel
@@ -318,6 +319,9 @@ def setup_hal(parent):
 		if child.property('function') == 'hal_pin':
 			if isinstance(child, QLabel):
 				hal_labels.append(child)
+		elif child.property('function') == 'hal_avr_f':
+			if isinstance(child, QLabel):
+				hal_avr_float_labels.append(child)
 
 	##### HAL LABEL #####
 	if len(hal_labels) > 0:
@@ -372,7 +376,7 @@ def setup_hal(parent):
 
 			hal_type = getattr(hal, f'{hal_type}')
 			hal_dir = getattr(hal, 'HAL_IN')
-			#print(f'pin_name {pin_name} hal type {hal_type}')
+
 			# Only create the pin if its not already created
 			if pin_name in dir(parent):
 				pin = getattr(parent, f'{pin_name}')
@@ -398,8 +402,101 @@ def setup_hal(parent):
 				integer_digits = label.property('integer_digits')
 				parent.hal_readers[label_name] = [pin_name, integer_digits]
 
-	#for key, value in parent.hal_readers.items():
-	#	print(key, value)
+	##### HAL AVERAGE FLOAT LABEL #####
+	if len(hal_avr_float_labels) > 0:
+		#valid_types = ['HAL_FLOAT', 'HAL_S32', 'HAL_U32']
+		for label in hal_avr_float_labels:
+			label_name = label.objectName()
+			pin_name = label.property('pin_name')
+			s = label.property('samples') or 10
+			r = label.property('rounding') or 0
+			if r > 0:
+				r = -r
+
+			if pin_name in [None, '']:
+				label.setEnabled(False)
+				msg = (f'HAL Average Label {label_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {label_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if pin_name in dir(parent):
+				label.setEnabled(False)
+				msg = (f'HAL Average Label {label_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.'
+				f'The {label_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			hal_type = getattr(hal, 'HAL_FLOAT')
+			hal_dir = getattr(hal, 'HAL_IN')
+			setattr(parent, f'{pin_name}', parent.halcomp.newpin(pin_name, hal_type, hal_dir))
+
+			p = label.property('precision')
+			p = p if p is not None else parent.default_precision
+
+			parent.hal_avr_float[label_name] = [pin_name, deque([0], maxlen=s), p, r]
+
+	for key, value in parent.hal_avr_float.items():
+		print(key, value)
+
+	# FIXME add hal_avr_i_labels
+	##### HAL AVERAGE INT LABEL #####
+	# parent.hal_avr_int = {}
+
+
+	##### HAL MULTI STATE LABEL #####
+	if len(hal_multi_state_labels) > 0:
+		for label in hal_multi_state_labels:
+			msl_name = label.objectName()
+			pin_name = label.property('pin_name')
+
+			if pin_name in [None, '']:
+				label.setEnabled(False)
+				msg = (f'HAL MULTI STATE LABEL {msl_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {msl_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if pin_name in dir(parent):
+				msg = (f'HAL Multi-State Label {label_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if label.property('text_0') == None:
+				label.setEnabled(False)
+				msg = (f'HAL MULTI STATE LABEL {msl_name}\n'
+				'text_0 Dynamic Property is blank or missing\n'
+				'A HAL MULTI STATE LABEL requires at least\n'
+				'one text message to display starting with\n'
+				'text_0. The HAL pin can not be created.\n'
+				f'The {msl_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			hal_type = getattr(hal, 'HAL_U32')
+			hal_dir = getattr(hal, 'HAL_IN')
+			setattr(parent, f'{pin_name}', parent.halcomp.newpin(pin_name, hal_type, hal_dir))
+			#pin = getattr(parent, f'{pin_name}')
+			text = ''
+			text_list = []
+			i = 0
+			while text is not None:
+				text = label.property(f'text_{i}')
+				if text is not None:
+					text_list.append(text)
+				i += 1
+			parent.hal_ms_labels[msl_name] = [pin_name, text_list]
+
 
 def setup_tools(parent):
 	pass

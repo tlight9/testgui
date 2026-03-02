@@ -1,4 +1,4 @@
-import math
+import math, statistics
 
 from PyQt6.QtGui import QTextCursor
 from PyQt6.QtWidgets import QLCDNumber
@@ -255,6 +255,14 @@ def update(parent):
 		else:
 			getattr(parent, key).setText(value[2])
 
+	# update hal average float labels key is label name and value is pin name
+	# [pin_name, deque([0], maxlen=samples), p, _round]
+	for key, value in parent.hal_avr_float.items():
+		cur_val = hal.get_value(f'flexhal.{value[0]}')
+		value[1].append(cur_val)
+		stat = statistics.fmean(value[1])
+		rounding = value[3]
+		getattr(parent, key).setText(f'{round(stat, rounding):.{value[2]}f}')
 
 	# handle errors
 	error = parent.error.poll()
