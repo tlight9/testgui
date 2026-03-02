@@ -10,6 +10,7 @@ from functools import partial
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.uic import loadUi
+
 import linuxcnc as emc
 import hal
 
@@ -43,6 +44,9 @@ class testgui(QMainWindow):
 		self.status.poll()
 		self.command = emc.command()
 		self.error = emc.error_channel()
+
+		# setup hal components
+		self.halcomp = hal.component('flexhal')
 
 		# find and load the gui
 		gui_file = self.inifile.find('DISPLAY', 'GUI') or False
@@ -83,6 +87,7 @@ class testgui(QMainWindow):
 		startup.setup_mdi_buttons(self)
 		startup.setup_jog(self)
 		startup.setup_plot(self)
+		startup.setup_hal(self)
 
 		# get emc states
 		self.exec_state = self.status.exec_state

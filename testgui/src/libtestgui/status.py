@@ -1,8 +1,10 @@
 import math
 
 from PyQt6.QtGui import QTextCursor
+from PyQt6.QtWidgets import QLCDNumber
 
 import linuxcnc as emc
+import hal
 
 from libtestgui import utilities
 
@@ -223,6 +225,35 @@ def update(parent):
 			parent.program_units = 'INCH'
 		else:
 			parent.program_units = 'MM'
+
+	#### HAL ####
+	# update hal labels key is label name and value[0] is pin name value[1] is digits
+	for key, value in parent.hal_readers.items():
+		state = hal.get_value(f'flexhal.{value[0]}')
+		if value[1] is not None:
+			state = f"{state:0{value[1]}d}"
+		if isinstance(getattr(parent, key), QLCDNumber):
+			getattr(parent, key).display(f'{state}')
+		else: # it's a HAL Label
+			getattr(parent, key).setText(f'{state}')
+
+	# update hal float labels
+	for key, value in parent.hal_floats.items():
+		# label [status item, precision]
+		hal_value = hal.get_value(f'flexhal.{value[0]}')
+		if isinstance(getattr(parent, key), QLCDNumber):
+			getattr(parent, key).display(f'{hal_value:.{value[1]}f}')
+		else:
+			getattr(parent, key).setText(f'{hal_value:.{value[1]}f}')
+
+	# update hal bool labels
+	# key is label name, value[0] is pin name, value[1] is true text, value[2] is false text
+	for key, value in parent.hal_bool_labels.items():
+		state = hal.get_value(f'flexhal.{value[0]}')
+		if state:
+			getattr(parent, key).setText(value[1])
+		else:
+			getattr(parent, key).setText(value[2])
 
 
 	# handle errors

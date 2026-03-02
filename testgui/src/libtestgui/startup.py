@@ -3,8 +3,11 @@ import os
 from functools import partial
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
+from PyQt6.QtWidgets import QLabel
 from PyQt6.QtWidgets import QVBoxLayout
 from PyQt6.QtGui import QAction
+
+import hal
 
 from libtestgui import actions
 from libtestgui import commands
@@ -288,7 +291,115 @@ def setup_plot(parent):
 		layout = QVBoxLayout(parent.plot_widget)
 		layout.addWidget(parent.plotter)
 
+def setup_hal(parent):
+	hal_labels = []
+	hal_avr_float_labels = [] # average float labels
+	hal_avr_int_labels = [] # average int labels
+	hal_multi_state_labels = [] # multi state labels
+	hal_buttons = []
+	hal_spinboxes = []
+	hal_dbl_spinboxes = []
+	hal_sliders = []
+	hal_lcds = []
+	hal_leds = []
+	hal_progressbar = []
+	parent.hal_io_check = {}
+	parent.hal_io_int = {}
+	parent.hal_io_float = {}
+	parent.hal_avr_float = {}
+	parent.hal_avr_int = {}
+	parent.hal_readers = {}
+	parent.hal_ms_labels = {}
+	parent.hal_bool_labels = {}
+	parent.hal_progressbars = {}
+	parent.hal_floats = {}
 
+	for child in parent.findChildren(QWidget):
+		if child.property('function') == 'hal_pin':
+			if isinstance(child, QLabel):
+				hal_labels.append(child)
+
+	##### HAL LABEL #####
+	if len(hal_labels) > 0:
+		valid_types = ['HAL_BIT', 'HAL_FLOAT', 'HAL_S32', 'HAL_U32']
+		for label in hal_labels:
+			label_name = label.objectName()
+			pin_name = label.property('pin_name')
+			hal_type = label.property('hal_type')
+			true_text = label.property('true_text')
+			false_text = label.property('false_text')
+			#print(true_text, false_text)
+			if any([true_text, false_text]):
+				if not all([true_text, false_text]):
+					label.setEnabled(False)
+					msg = (f'HAL BOOL LABEL {label_name}\n'
+					'the true text is blank or missing\n'
+					'or the false text is blank or missing\n'
+					'The HAL pin can not be created.\n'
+					f'The {label_name} will be disabled.')
+					dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+					continue
+				elif all([true_text, false_text]):
+					hal_type = 'HAL_BIT'
+
+			if pin_name in [None, '']:
+				label.setEnabled(False)
+				msg = (f'HAL LABEL {label_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {label_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			# the pin_name can not be the same as a built in variable or object name
+			if pin_name in parent.child_names:
+				msg = (f'HAL Label {label_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if hal_type not in valid_types:
+				label.setEnabled(False)
+				msg = (
+				f'{hal_type} is not valid type for a\n'
+				' HAL Label. Valid types are HAL_BIT, \n'
+				'HAL_FLOAT, HAL_S32 or HAL_U32\n'
+				f'The {label_name} label will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error!')
+				continue
+
+			hal_type = getattr(hal, f'{hal_type}')
+			hal_dir = getattr(hal, 'HAL_IN')
+			#print(f'pin_name {pin_name} hal type {hal_type}')
+			# Only create the pin if its not already created
+			if pin_name in dir(parent):
+				pin = getattr(parent, f'{pin_name}')
+				if pin.get_type() != hal_type or pin.get_dir() != hal_dir:
+					label.setEnabled(False)
+					msg = (f'An existing HAL pin named {pin_name}\n'
+						'exists, but has a different type or direction.\n'
+						'The HAL object will not be created\n'
+						'and the label will be disabled.')
+					dialogs.critical_msg_ok(parent, msg, 'Configuration Error!')
+					continue
+			elif None not in [pin_name, hal_type, hal_dir]:
+				setattr(parent, f'{pin_name}', parent.halcomp.newpin(pin_name, hal_type, hal_dir))
+
+			# if hal type is float add it to hal_float with precision
+			if hal_type == 2: # HAL_FLOAT
+				p = label.property('precision')
+				p = p if p is not None else parent.default_precision
+				parent.hal_floats[f'{label_name}'] = [pin_name, p] # label ,status item, precision
+			elif true_text and false_text:
+				parent.hal_bool_labels[label_name] = [pin_name, true_text, false_text]
+			else:
+				integer_digits = label.property('integer_digits')
+				parent.hal_readers[label_name] = [pin_name, integer_digits]
+
+	#for key, value in parent.hal_readers.items():
+	#	print(key, value)
 
 def setup_tools(parent):
 	pass
