@@ -287,7 +287,7 @@ def setup_jog(parent):
 def setup_plot(parent):
 	if 'plot_widget' in parent.child_names:
 		# add the plotter to the container
-		from libflexgui import flexplot
+		from libtestgui import flexplot
 		parent.plotter = flexplot.emc_plot(parent)
 		layout = QVBoxLayout(parent.plot_widget)
 		layout.addWidget(parent.plotter)
