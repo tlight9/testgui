@@ -98,9 +98,21 @@ class testgui(QMainWindow):
 		self.update_timer.timeout.connect(partial(status.update, self))
 		self.update_timer.start(10) # milliseconds
 
+		# set the screen size and position
+		if self.settings.contains('GUI/window_size'):
+			self.resize(self.settings.value('GUI/window_size'))
+		if self.settings.contains('GUI/window_position'):
+			self.move(self.settings.value('GUI/window_position'))
+		else:
+			self.move(0, 0) # if no settings move window to upper left corner
 
 		self.show()
 
+	def closeEvent(self, event):
+		self.settings.setValue('GUI/window_size', self.size())
+		self.settings.setValue('GUI/window_position', self.pos())
+		#if self.help_dialog is not None:
+		#	self.help_dialog.close()
 
 
 app = QApplication(sys.argv)

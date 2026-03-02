@@ -1,8 +1,17 @@
 import os
 
+from PyQt6.QtCore import QSettings
+
 from libtestgui import dialogs
 
 def read(parent):
+
+	# ***** [EMC] Section *****
+	machine_name = parent.inifile.find('EMC', 'MACHINE') or False
+	if machine_name: # FIXME rename back to Flex when done
+		parent.settings = QSettings('Test_flex', machine_name)
+	else:
+		parent.settings = QSettings('Test_flex', 'unknown')
 
 	# ***** [DISPLAY] Section *****
 
