@@ -45,7 +45,6 @@ def unhome_all(parent):
 	parent.command.teleop_enable(False)
 	parent.command.wait_complete()
 	parent.command.unhome(-1)
-	#parent.home_all = True
 
 def run_mdi(parent):
 	mdi_command = parent.mdi_command_le.text()
@@ -56,8 +55,6 @@ def run_mdi(parent):
 				parent.command.mode(emc.MODE_MDI)
 				parent.command.wait_complete()
 				parent.command.mdi(mdi_command)
-	else:
-		print('blank')
 
 def add_mdi(parent): # when you click on the mdi history list widget
 	parent.mdi_command_le.setText(f'{parent.mdi_history_lw.currentItem().text()}')
