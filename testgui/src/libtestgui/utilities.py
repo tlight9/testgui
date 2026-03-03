@@ -109,7 +109,6 @@ def home_all_check(parent):
 	return True
 
 def update_home_controls(parent):
-	parent.home_all = False
 	parent.status.poll()
 	for joint in range(parent.joints):
 		if parent.status.joint[joint]['homed']:
@@ -117,10 +116,20 @@ def update_home_controls(parent):
 				getattr(parent, f'home_pb_{joint}').setEnabled(False)
 			if f'unhome_pb_{joint}' in parent.child_names:
 				getattr(parent, f'unhome_pb_{joint}').setEnabled(True)
+		elif not parent.status.joint[joint]['homed']:
+			if f'home_pb_{joint}' in parent.child_names:
+				getattr(parent, f'home_pb_{joint}').setEnabled(True)
+			if f'unhome_pb_{joint}' in parent.child_names:
+				getattr(parent, f'unhome_pb_{joint}').setEnabled(False)
 	if all(parent.status.homed[:parent.joints]):
 		parent.home_all_pb.setEnabled(False)
 		if 'unhome_all_pb' in parent.child_names:
 			parent.unhome_all_pb.setEnabled(True)
+	if not any(parent.status.homed[:parent.joints]):
+		if 'home_all_pb' in parent.child_names and home_all_check(parent):
+			parent.home_all_pb.setEnabled(True)
+		if 'unhome_all_pb' in parent.child_names:
+			parent.unhome_all_pb.setEnabled(False)
 
 
 

@@ -2,53 +2,50 @@
 import linuxcnc as emc
 
 from libtestgui import dialogs
+from libtestgui import utilities
+
+def set_task_mode(parent, mode):
+	parent.status.poll()
+	if parent.status.task_mode != mode:
+		parent.command.mode(mode)
+		parent.command.wait_complete()
+
+def set_motion_mode(parent, mode):
+	parent.status.poll()
+	if parent.status.motion_mode != mode:
+		parent.command.mode(mode)
+		parent.command.wait_complete()
 
 def home(parent):
-	parent.status.poll()
 	joint = int(parent.sender().objectName()[-1])
 	if parent.status.homed[joint] == 0: # not homed
-		if parent.status.task_mode != emc.MODE_MANUAL:
-			parent.command.mode(emc.MODE_MANUAL)
-			parent.command.wait_complete()
-		if parent.status.motion_mode != emc.TRAJ_MODE_FREE:
-			parent.command.teleop_enable(False)
-			parent.command.wait_complete()
+		set_task_mode(parent, emc.MODE_MANUAL)
+		parent.command.teleop_enable(False)
+		parent.command.wait_complete()
 		parent.command.home(joint)
-		parent.sender().setEnabled(False)
-		if f'unhome_pb_{joint}' in parent.child_names:
-			getattr(parent, f'unhome_pb_{joint}').setEnabled(True)
 
 def home_all(parent):
-	parent.status.poll()
-	if parent.status.task_mode != emc.MODE_MANUAL:
-		parent.command.mode(emc.MODE_MANUAL)
-		parent.command.wait_complete()
+	set_task_mode(parent, emc.MODE_MANUAL)
 	parent.command.teleop_enable(False)
 	parent.command.wait_complete()
 	parent.command.home(-1)
-	parent.home_all = True
 
 def unhome(parent):
 	parent.status.poll()
 	joint = int(parent.sender().objectName()[-1])
 	if parent.status.homed[joint] == 1: # joint is homed so unhome it
-		if parent.status.task_mode != emc.MODE_MANUAL:
-			parent.command.mode(emc.MODE_MANUAL)
-			parent.command.wait_complete()
+		set_task_mode(parent, emc.MODE_MANUAL)
 		if parent.status.motion_mode != emc.TRAJ_MODE_FREE:
 			parent.command.teleop_enable(False)
 			parent.command.wait_complete()
 		parent.command.unhome(joint)
-		parent.sender().setEnabled(False)
-		if f'home_pb_{joint}' in parent.child_names:
-			getattr(parent, f'home_pb_{joint}').setEnabled(True)
-		parent.status.poll()
-		print(parent.status.homed)
-		if not any(parent.status.homed):
-			if 'home_all_pb' in parent.child_names:
-				parent.home_all_pb.setEnabled(True)
-			if 'unhome_all_pb' in parent.child_names:
-				parent.unhome_all_pb.setEnabled(False)
+
+def unhome_all(parent):
+	set_task_mode(parent, emc.MODE_MANUAL)
+	parent.command.teleop_enable(False)
+	parent.command.wait_complete()
+	parent.command.unhome(-1)
+	#parent.home_all = True
 
 def run_mdi(parent):
 	mdi_command = parent.mdi_command_le.text()

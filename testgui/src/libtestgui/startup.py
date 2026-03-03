@@ -46,7 +46,7 @@ def find_children(parent): # get the object names of all widgets
 def setup_vars(parent):
 	parent.program_units = False
 	parent.g_codes = ()
-	parent.home_all = False
+	parent.homed = ()
 
 def setup_enables(parent):
 
@@ -209,6 +209,8 @@ def setup_buttons(parent): # connect buttons to functions
 			if 'home_all_pb' in parent.state_estop_reset_disabled:
 				del parent.state_estop_reset_disabled['home_all_pb']
 
+	if 'unhome_all_pb' in parent.child_names:
+			parent.unhome_all_pb.clicked.connect(partial(commands.unhome_all, parent))
 
 	for i in range(9):
 		if f'home_pb_{i}' in parent.child_names:

@@ -83,8 +83,6 @@ def update(parent):
 		if parent.status.motion_mode == emc.TRAJ_MODE_TELEOP:
 			for item in parent.homed_enabled:
 				getattr(parent, item).setEnabled(True)
-			if parent.home_all:
-				utilities.update_home_controls(parent)
 		else:
 			for item in parent.homed_enabled:
 				getattr(parent, item).setEnabled(False)
@@ -165,6 +163,12 @@ def update(parent):
 	#if changed:
 		#pass
 		#print('*** End of Changes ***\n')
+
+	# test for change to homed status
+	if parent.homed != parent.status.homed:
+		if parent.status.task_state == emc.STATE_ON:
+			utilities.update_home_controls(parent)
+		parent.homed = parent.status.homed
 
 	# axis position no offsets
 	for key, value in parent.status_position.items(): # key is label value precision
