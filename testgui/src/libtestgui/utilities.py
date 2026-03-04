@@ -171,6 +171,19 @@ def hal_confirm(parent):
 		sender.setChecked(not checked_state)
 		sender.blockSignals(False)
 
+def update_hal_io(parent, value):
+	setattr(parent.halcomp, parent.sender().property('pin_name'), value)
+
+def update_hal_spinbox(parent, value):
+	setattr(parent.halcomp, parent.sender().property('pin_name'), value)
+
+def update_hal_slider(parent, value):
+	setattr(parent.halcomp, parent.sender().property('pin_name'), value)
+
+def change_page(parent):
+	object_name = parent.sender().property('change_page')
+	index = int(parent.sender().property('index'))
+	getattr(parent, object_name).setCurrentIndex(index)
 
 
 

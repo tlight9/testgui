@@ -4,7 +4,7 @@ from functools import partial
 from collections import deque
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
-from PyQt6.QtWidgets import QLabel, QAbstractSpinBox
+from PyQt6.QtWidgets import QLabel, QSpinBox, QDoubleSpinBox
 from PyQt6.QtWidgets import QAbstractButton, QCheckBox
 from PyQt6.QtWidgets import QVBoxLayout
 from PyQt6.QtGui import QAction
@@ -336,6 +336,10 @@ def setup_hal(parent):
 		if child.property('function') == 'hal_pin':
 			if isinstance(child, QAbstractButton): # QCheckBox, QPushButton, QRadioButton, and QToolButton
 				hal_buttons.append(child)
+			elif isinstance(child, QSpinBox):
+				hal_spinboxes.append(child)
+			elif isinstance(child, QDoubleSpinBox):
+				hal_dbl_spinboxes.append(child)
 			elif isinstance(child, QLabel):
 				hal_labels.append(child)
 		elif child.property('function') == 'hal_avr_f':
@@ -350,11 +354,11 @@ def setup_hal(parent):
 		for button in hal_buttons:
 			button_name = button.objectName()
 			pin_name = button.property('pin_name')
+
 			if isinstance(button, QPushButton) or isinstance(button, QCheckBox):
 				confirm = button.property('confirm')
 			else:
 				confirm = False
-
 			if confirm and not button.isCheckable():
 				button.setEnabled(False)
 				msg = (f'The HAL Button {button_name}\n'
@@ -400,6 +404,58 @@ def setup_hal(parent):
 				button.released.connect(lambda pin=pin: (pin.set(False)))
 
 			utilities.set_hal_enables(parent, button)
+
+	##### HAL SPINBOX #####
+	print(hal_spinboxes)
+	if len(hal_spinboxes) > 0:
+		valid_types = ['HAL_S32', 'HAL_U32']
+		for spinbox in hal_spinboxes:
+			spinbox_name = spinbox.objectName()
+			pin_name = spinbox.property('pin_name')
+
+			if pin_name in [None, '']:
+				spinbox.setEnabled(False)
+				msg = (f'HAL SPINBOX {spinbox_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {spinbox_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if pin_name in dir(parent):
+				spinbox.setEnabled(False)
+				msg = (f'HAL Spinbox {spinbox_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.\n'
+				f'The {spinbox_name} spinbox will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			hal_type = spinbox.property('hal_type')
+			if hal_type not in valid_types:
+				spinbox.setEnabled(False)
+				msg = (f'{hal_type} is not valid\n'
+				'for a HAL spinbox, only\n'
+				'HAL_S32 or HAL_U32\n'
+				f'The {spinbox_name} spinbox will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error!')
+				continue
+
+			hal_type = getattr(hal, f'{hal_type}')
+			hal_dir = getattr(hal, 'HAL_OUT')
+			parent.halcomp.newpin(pin_name, hal_type, hal_dir)
+			# set the default value of the spin box to the hal pin
+			setattr(parent.halcomp, pin_name, spinbox.value())
+			spinbox.valueChanged.connect(partial(utilities.update_hal_spinbox, parent))
+
+			utilities.set_hal_enables(parent, spinbox)
+
+			# FIXME look into this to see if it can be added to utilities.set_hal_enables
+			#if parent.probe_controls: # make sure the probing_enable_pb is there
+			#	if spinbox_name.startswith('probe_'): # don't enable it when power is on
+			#		parent.probe_controls.append(spinbox_name)
+
 
 
 	##### HAL LABEL #####
