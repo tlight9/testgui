@@ -19,12 +19,14 @@ Power
 Quit
 
 ** MDI **
+
 Command Line Edit
 Run MDI Command
 
 MDI Button
 
 ** Status Labels **
+
 exec_state_lb
 interp_state_lb
 interpreter_errcode_lb
@@ -40,6 +42,7 @@ Offsets for the currently active G5x coordinate system
 Offsets for G92
 
 ** HAL **
+
 HAL Labels
 HAL Average Float Labels
 HAL Multi State Labels
