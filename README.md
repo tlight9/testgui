@@ -7,26 +7,25 @@ A test gui trying to figure out why some probe routines just stop working.
 List of things added back
 ```
 ** Menus **
-
 Programs
 Show HAL
 
 ** Controls **
-
 Push Buttons
 Estop
 Power
 Quit
 
-** MDI **
+** Plotter **
+plot_widget
 
+** MDI **
 Command Line Edit
 Run MDI Command
 
-MDI Button
+MDI Buttons
 
 ** Status Labels **
-
 exec_state_lb
 interp_state_lb
 interpreter_errcode_lb
@@ -42,11 +41,11 @@ Offsets for the currently active G5x coordinate system
 Offsets for G92
 
 ** HAL **
-
 HAL Labels
 HAL Average Float Labels
 HAL Multi State Labels
 
-
+** Miscellaneous Items **
+Error Viewer
 
 ```
