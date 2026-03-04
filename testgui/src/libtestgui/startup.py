@@ -6,7 +6,7 @@ from collections import deque
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
 from PyQt6.QtWidgets import QLabel, QSpinBox, QDoubleSpinBox, QSlider
 from PyQt6.QtWidgets import QAbstractButton, QCheckBox, QProgressBar
-from PyQt6.QtWidgets import QVBoxLayout, QLCDNumber
+from PyQt6.QtWidgets import QVBoxLayout, QLCDNumber, QRadioButton
 from PyQt6.QtGui import QAction
 
 import hal
