@@ -406,7 +406,6 @@ def setup_hal(parent):
 			utilities.set_hal_enables(parent, button)
 
 	##### HAL SPINBOX #####
-	print(hal_spinboxes)
 	if len(hal_spinboxes) > 0:
 		valid_types = ['HAL_S32', 'HAL_U32']
 		for spinbox in hal_spinboxes:
@@ -456,6 +455,39 @@ def setup_hal(parent):
 			#	if spinbox_name.startswith('probe_'): # don't enable it when power is on
 			#		parent.probe_controls.append(spinbox_name)
 
+	##### HAL Double Spinboxes #####
+	if len(hal_dbl_spinboxes) > 0:
+		for spinbox in hal_dbl_spinboxes:
+			spinbox_name = spinbox.objectName()
+			pin_name = spinbox.property('pin_name')
+
+			if pin_name in [None, '']:
+				spinbox.setEnabled(False)
+				msg = (f'HAL SPINBOX {spinbox_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {spinbox_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if pin_name in dir(parent):
+				spinbox.setEnabled(False)
+				msg = (f'HAL Spinbox {spinbox_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.\n'
+				f'The {spinbox_name} spinbox will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			hal_type = getattr(hal, 'HAL_FLOAT')
+			hal_dir = getattr(hal, 'HAL_OUT')
+			parent.halcomp.newpin(pin_name, hal_type, hal_dir)
+			# set the default value of the spin box to the hal pin
+			setattr(parent.halcomp, pin_name, spinbox.value())
+			spinbox.valueChanged.connect(partial(utilities.update_hal_spinbox, parent))
+
+			utilities.set_hal_enables(parent, spinbox)
 
 
 	##### HAL LABEL #####
