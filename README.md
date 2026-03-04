@@ -4,8 +4,16 @@
 
 A test gui trying to figure out why some probe routines just stop working.
 
-List of things added back
+List of things improved and added back from Flex GUI
 ```
+** INI Items **
+[DISPLAY]
+INCREMENTS
+
+[FLEXGUI]
+QSS
+RESOURCES
+
 ** Menus **
 Programs
 Show HAL
@@ -14,7 +22,17 @@ Show HAL
 Push Buttons
 Estop
 Power
+Home All
+Home Axis
+Unhome All
+Unhome Axis
 Quit
+
+** Jogging **
+Jog Velocity Slider
+Jog Mode Selector
+Jog Plus Axis
+Jog Minus Axis
 
 ** Plotter **
 plot_widget
