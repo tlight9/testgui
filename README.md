@@ -63,7 +63,7 @@ HAL Labels
 HAL Average Float Labels
 HAL Multi State Labels
 HAL Checkbox, Button and Radio Button
-HAL Spinbox, Double Spinbox
+HAL Spinbox, Double Spinbox, Slider
 
 ** Miscellaneous Items **
 Error Viewer

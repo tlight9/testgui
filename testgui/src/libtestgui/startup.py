@@ -4,7 +4,7 @@ from functools import partial
 from collections import deque
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QMenu, QListView
-from PyQt6.QtWidgets import QLabel, QSpinBox, QDoubleSpinBox
+from PyQt6.QtWidgets import QLabel, QSpinBox, QDoubleSpinBox, QSlider
 from PyQt6.QtWidgets import QAbstractButton, QCheckBox
 from PyQt6.QtWidgets import QVBoxLayout
 from PyQt6.QtGui import QAction
@@ -340,6 +340,8 @@ def setup_hal(parent):
 				hal_spinboxes.append(child)
 			elif isinstance(child, QDoubleSpinBox):
 				hal_dbl_spinboxes.append(child)
+			elif isinstance(child, QSlider):
+				hal_sliders.append(child)
 			elif isinstance(child, QLabel):
 				hal_labels.append(child)
 		elif child.property('function') == 'hal_avr_f':
@@ -488,6 +490,56 @@ def setup_hal(parent):
 			spinbox.valueChanged.connect(partial(utilities.update_hal_spinbox, parent))
 
 			utilities.set_hal_enables(parent, spinbox)
+
+	##### HAL SLIDERS #####
+	if len(hal_sliders) > 0:
+		valid_types = ['HAL_S32', 'HAL_U32']
+		for slider in hal_sliders:
+			slider_name = slider.objectName()
+			pin_name = slider.property('pin_name')
+
+			if pin_name in [None, '']:
+				slider.setEnabled(False)
+				msg = (f'HAL SLIDER {slider_name}\n'
+				'pin name is blank or missing\n'
+				'The HAL pin can not be created.\n'
+				f'The {slider_name} will be disabled.')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			if pin_name in dir(parent):
+				slider.setEnabled(False)
+				msg = (f'HAL Slider {slider_name}\n'
+				f'pin name {pin_name}\n'
+				'is already used in Flex GUI\n'
+				'The HAL pin can not be created.\n')
+				f'The {slider_name} slider will be disabled.'
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+				continue
+
+			hal_type = slider.property('hal_type')
+			if hal_type not in valid_types:
+				slider.setEnabled(False)
+				msg = (f'{hal_type} is not valid\n'
+				'for a HAL slider, only\n'
+				'HAL_S32 or HAL_U32 are valid\n'
+				f'The {slider_name} slider will be disabled.\n')
+				dialogs.error_msg_ok(parent, msg, 'Configuration Error!')
+				continue
+
+			hal_type = getattr(hal, f'{hal_type}')
+			hal_dir = getattr(hal, 'HAL_OUT')
+			parent.halcomp.newpin(pin_name, hal_type, hal_dir)
+			# set the default value of the spin box to the hal pin
+			setattr(parent.halcomp, pin_name, slider.value())
+			slider.valueChanged.connect(partial(utilities.update_hal_slider, parent))
+
+			utilities.set_hal_enables(parent, slider)
+
+			# FIXME look into this to see if it can be added to utilities.set_hal_enables
+			#if parent.probe_controls: # make sure the probing_enable_pb is there
+			#	if slider_name.startswith('probe_'): # don't enable it when power is on
+			#		parent.probe_controls.append(slider_name)
 
 
 	##### HAL LABEL #####
