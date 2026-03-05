@@ -318,9 +318,9 @@ def setup_run_controls(parent):
 			parent.run_controls.append(item)
 	for item in AXES:
 		if f'tool_touchoff_{item}' in parent.child_names:
-			run_items.append(f'tool_touchoff_{item}')
+			parent.run_controls.append(f'tool_touchoff_{item}')
 		if f'touchoff_pb_{item}' in parent.child_names:
-			run_items.append(f'touchoff_pb_{item}')
+			parent.run_controls.append(f'touchoff_pb_{item}')
 
 def setup_mdi(parent):
 	# mdi_command_le is required to run mdi commands

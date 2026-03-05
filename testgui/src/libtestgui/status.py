@@ -59,7 +59,11 @@ def update(parent):
 		#print(f'INTERP STATE: {INTERP_STATES[parent.status.interp_state]}')
 		if 'interp_state_lb' in parent.child_names: # update the label
 			parent.interp_state_lb.setText(INTERP_STATES[parent.status.interp_state])
-		changed = True
+
+		if parent.status.interp_state == emc.INTERP_IDLE:
+			if parent.status.task_mode == emc.MODE_AUTO:
+				pass
+			
 
 		parent.interp_state = parent.status.interp_state
 
@@ -116,8 +120,10 @@ def update(parent):
 			utilities.update_mdi(parent)
 
 		# program is running
-		if parent.status.task_mode == emc.MODE_AUTO and parent.status.command_status == emc.RCS_EXEC:
+		if parent.status.task_mode == emc.MODE_AUTO and parent.status.state == emc.RCS_EXEC:
 			for item in parent.program_running_disabled:
+				getattr(parent, item).setEnabled(False)
+			for item in parent.run_controls:
 				getattr(parent, item).setEnabled(False)
 		else:
 			for item in parent.program_running_disabled:
@@ -149,11 +155,16 @@ def update(parent):
 				getattr(parent, item).setEnabled(False)
 			for item in parent.state_estop_reset_enabled:
 				getattr(parent, item).setEnabled(True)
+			for item in parent.run_controls:
+				getattr(parent, item).setEnabled(False)
 
 		# estop closed power on
 		if parent.status.task_state == emc.STATE_ON:
 			#print('status update STATE_ON')
 			for item in parent.state_on_enabled:
+				getattr(parent, item).setEnabled(True)
+		if all(parent.status.homed[:parent.joints]) and parent.status.task_state == emc.STATE_ON:
+			for item in parent.run_controls:
 				getattr(parent, item).setEnabled(True)
 
 		parent.task_state = parent.status.task_state
@@ -171,12 +182,17 @@ def update(parent):
 	if parent.homed != parent.status.homed:
 		if parent.status.task_state == emc.STATE_ON:
 			utilities.update_home_controls(parent)
+			if all(parent.status.homed[:parent.joints]) and parent.status.file != '':
+				for item in parent.run_controls:
+					getattr(parent, item).setEnabled(True)
 
 		if all(parent.status.homed[:parent.joints]):
 			for item in parent.homed_enabled:
 				getattr(parent, item).setEnabled(True)
 		else:
 			for item in parent.homed_enabled:
+				getattr(parent, item).setEnabled(False)
+			for item in parent.run_controls:
 				getattr(parent, item).setEnabled(False)
 
 		parent.homed = parent.status.homed
