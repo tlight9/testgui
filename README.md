@@ -15,7 +15,12 @@ QSS
 RESOURCES
 
 ** Menus **
-Programs
+* File *
+Open
+
+* Machine *
+
+* Programs *
 Show HAL
 
 ** Controls **

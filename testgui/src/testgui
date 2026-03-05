@@ -100,6 +100,8 @@ class testgui(QMainWindow):
 		startup.setup_plot(self)
 		startup.setup_hal(self)
 
+		startup.setup_defaults(self)
+
 		# setup and start the status update timer every 0.01 second
 		self.update_timer = QTimer()
 		self.update_timer.timeout.connect(partial(status.update, self))

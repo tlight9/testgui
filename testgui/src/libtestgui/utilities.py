@@ -1,5 +1,7 @@
 import re, os
 
+from PyQt6.QtWidgets import QFileDialog
+
 from libtestgui import dialogs
 
 def is_number(string):
@@ -82,6 +84,31 @@ def is_valid_increment(parent, item): # need to return text ,data and suffix
 					return False, False, False
 	else: # not a valid increment
 		return False, False, False
+
+def file_chooser(parent, caption, dialog_type, nc_code_dir=None):
+	if nc_code_dir is None:
+		nc_code_dir = parent.nc_code_dir
+	options = QFileDialog.Option.DontUseNativeDialog
+	file_path = False
+	file_dialog = QFileDialog()
+	file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+	file_dialog.setOptions(QFileDialog.Option.DontUseNativeDialog)
+	file_dialog.setWindowTitle('Open File')
+	file_dialog.setStyleSheet('') # this does  nothing
+	file_dialog.setGeometry(10, 10, 800, 600) # this does  nothing
+	if dialog_type == 'open':
+		file_path, file_type = file_dialog.getOpenFileName(None,
+		caption=caption, directory=parent.nc_code_dir,
+		filter=parent.ext_filter, options=options)
+	elif dialog == 'save':
+		file_path, file_type = file_dialog.getSaveFileName(None,
+		caption=caption, directory=parent.nc_code_dir,
+		filter=parent.ext_filter, options=options)
+	if file_path:
+		return file_path
+	else:
+		return False
+
 
 def update_mdi(parent):
 	if 'mdi_history_lw' in parent.child_names:

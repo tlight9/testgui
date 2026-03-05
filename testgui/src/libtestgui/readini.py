@@ -15,7 +15,53 @@ def read(parent):
 
 	# ***** [DISPLAY] Section *****
 
+	# check for jog increments
 	parent.jog_increments = parent.inifile.find('DISPLAY', 'INCREMENTS') or False
+
+	# check for default file to open
+	parent.open_file = parent.inifile.find('DISPLAY', 'OPEN_FILE') or False
+
+	# get file extensions
+	parent.extensions = ['.ngc'] # used by the touch file selector
+	extensions = parent.inifile.find('DISPLAY', 'EXTENSIONS') or False
+	if extensions: # add any extensions from the ini to ngc
+		for ext in extensions.split(','):
+			parent.extensions.append(ext.strip())
+		extensions = extensions.split(',')
+		extensions = ' '.join(extensions).strip()
+		parent.ext_filter = f'G code Files ({extensions});;All Files (*)'
+	else:
+		parent.ext_filter = 'G code Files (*.ngc *.NGC);;All Files (*)'
+
+	# set the nc code directory to some valid directory
+	directory = parent.inifile.find('DISPLAY', 'PROGRAM_PREFIX') or False
+	ini_dir = False
+	if directory: # expand directory if needed
+		ini_dir = True
+		if directory.startswith('./'): # in this directory
+			directory = os.path.join(parent.config_path, directory[2:])
+		elif directory.startswith('../'): # up one directory
+			directory = os.path.join(os.path.dirname(parent.config_path), directory[3:])
+		elif directory.startswith('~'): # users home directory
+			directory = os.path.expanduser(directory)
+
+	if os.path.isdir(directory):
+		parent.nc_code_dir = directory
+	else: # try and find a directory
+		if os.path.isdir(os.path.expanduser('~/linuxcnc/nc_files')):
+			parent.nc_code_dir = os.path.expanduser('~/linuxcnc/nc_files')
+		else:
+			parent.nc_code_dir = os.path.expanduser('~/')
+		if ini_dir: # a nc code directory was in the ini file but is not valid
+			msg = (f'The path {directory}\n'
+				'does not exist. Check the\n'
+				'PROGRAM_PREFIX key in the\n'
+				'[DISPLAY] section of the\n'
+				'INI file for a valid path.\n'
+				f'{parent.nc_code_dir} will be used.')
+			dialogs.warn_msg_ok(parent, msg, 'Configuration Error')
+
+
 
 	# ***** [FLEXGUI] Section *****
 

@@ -187,8 +187,44 @@ def setup_buttons(parent): # connect buttons to functions
 		parent.power_pb.toggled.connect(partial(actions.action_power, parent))
 		parent.power_pb.setCheckable(True)
 
-	if 'quit_pb' in parent.child_names:
-		parent.quit_pb.clicked.connect(partial(actions.action_quit, parent))
+	# file items if not loaded disable
+	file_items = ['edit_pb', 'reload_pb', 'save_as_pb', 'search_pb', 'actionEdit',
+		'actionReload', 'actionSave_As']
+
+	parent.file_edit_items = []
+	for item in file_items:
+		if item in parent.child_names:
+			parent.file_edit_items.append(item)
+
+	action_buttons = {
+	'run_pb': 'action_run',
+	'run_from_line_pb': 'action_run_from_line',
+	'step_pb': 'action_step',
+	'pause_pb': 'action_pause',
+	'resume_pb': 'action_resume',
+	'stop_pb': 'action_stop',
+	'open_pb': 'action_open',
+	'edit_pb': 'action_edit',
+	'reload_pb': 'action_reload',
+	'save_pb': 'action_save',
+	'save_as_pb': 'action_save_as',
+	'edit_tool_table_pb': 'action_edit_tool_table',
+	'edit_ladder_pb': 'action_ladder_editor',
+	'reload_tool_table_pb': 'action_reload_tool_table',
+	'quit_pb': 'action_quit',
+	'clear_mdi_history_pb': 'action_clear_mdi',
+	'copy_mdi_history_pb': 'action_copy_mdi',
+	'save_mdi_history_pb': 'action_save_mdi',
+	'show_hal_pb': 'action_show_hal',
+	'hal_meter_pb': 'action_hal_meter',
+	'hal_scope_pb': 'action_hal_scope',
+	'about_pb': 'action_about',
+	'quick_reference_pb': 'action_quick_reference'
+	}
+
+	for key, value in action_buttons.items():
+		if key in parent.child_names:
+			getattr(parent, key).clicked.connect(partial(getattr(actions, value), parent))
 
 	# disable home all if home sequence is not found
 	if 'home_all_pb' in parent.child_names:
@@ -218,13 +254,51 @@ def setup_buttons(parent): # connect buttons to functions
 
 def setup_actions(parent): # setup menu actions
 	actions_dict = {
-		'actionShow_HAL': 'action_show_hal'
-	}
+		'actionOpen': 'action_open',
+		'actionEdit': 'action_edit',
+		'actionReload': 'action_reload',
+		'actionSave': 'action_save',
+		'actionSave_As': 'action_save_as',
+		'actionEdit_Tool_Table': 'action_edit_tool_table',
+		'actionReload_Tool_Table': 'action_reload_tool_table',
+		'actionLadder_Editor': 'action_ladder_editor',
+		'actionQuit': 'action_quit',
+		'actionE_Stop': 'action_estop',
+		'actionPower': 'action_power',
+		'actionRun': 'action_run',
+		'actionRun_From_Line': 'action_run_from_line',
+		'actionStep': 'action_step',
+		'actionPause': 'action_pause',
+		'actionResume': 'action_resume',
+		'actionStop': 'action_stop',
+		'actionClear_MDI_History': 'action_clear_mdi',
+		'actionCopy_MDI_History': 'action_copy_mdi',
+		'actionOverlay': 'action_toggle_overlay',
+		'actionShow_HAL': 'action_show_hal',
+		'actionHAL_Meter': 'action_hal_meter',
+		'actionHAL_Scope': 'action_hal_scope',
+		'actionAbout': 'action_about',
+		'actionQuick_Reference': 'action_quick_reference',
+		'actionClear_Live_Plot': 'action_clear_live_plot'}
 
 	# if an action is found connect it to the function
 	for key, value in actions_dict.items():
 		if key in parent.child_names:
 			getattr(parent, f'{key}').triggered.connect(partial(getattr(actions, f'{value}'), parent))
+
+	# special check for the classicladder editor
+	if not hal.component_exists("classicladder_rt"):
+		if 'actionLadder_Editor' in parent.child_names:
+			parent.actionLadder_Editor.setEnabled(False)
+		if 'edit_ladder_pb' in parent.child_names:
+			parent.edit_ladder_pb.setEnabled(False)
+
+	# special check for MDI
+	if 'mdi_history_lw' in parent.child_names:
+		if 'actionClear_MDI_History' in parent.child_names:
+			parent.actionClear_MDI_History.setEnabled(False)
+		if 'actionCopy_MDI_History' in parent.child_names:
+			parent.actionCopy_MDI_History.setEnabled(False)
 
 def setup_mdi(parent):
 	# mdi_command_le is required to run mdi commands
@@ -816,6 +890,10 @@ def setup_hal(parent):
 					text_list.append(text)
 				i += 1
 			parent.hal_ms_labels[label_name] = [pin_name, text_list]
+
+def setup_defaults(parent):
+	if parent.open_file and parent.open_file != '""':
+		actions.load_file(parent, parent.open_file)
 
 
 def setup_tools(parent):
