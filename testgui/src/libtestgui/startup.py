@@ -57,6 +57,8 @@ def setup_enables(parent):
 	parent.state_estop_reset_enabled = []
 	parent.state_on_enabled = []
 	parent.homed_enabled = []
+	parent.program_running_disabled = []
+	parent.run_controls = [] # enabled when homed, manual, file loaded
 
 	# STATE_ESTOP everything is disabled except the estop and file open save etc.
 	state_estop_items = ['power_pb', 'run_pb', 'run_from_line_pb',
@@ -87,7 +89,6 @@ def setup_enables(parent):
 	for name in state_estop_items:
 		if name in parent.child_names:
 			parent.state_estop_disabled.append(name)
-
 
 	# STATE_ESTOP_RESET everything is disabled except power_pb
 	state_estop_reset_disabled_items = ['run_pb', 'run_from_line_pb', 'step_pb',
@@ -252,6 +253,12 @@ def setup_buttons(parent): # connect buttons to functions
 			getattr(parent, f'unhome_pb_{i}').clicked.connect(partial(commands.unhome, parent))
 			parent.state_estop_disabled.append(f'unhome_pb_{i}')
 
+	# file open buttons
+	for child in parent.findChildren(QPushButton):
+		if child.property('function') == 'load_file':
+			child.clicked.connect(partial(actions.load_file, parent))
+			parent.program_running_disabled.append(child.objectName())
+
 def setup_actions(parent): # setup menu actions
 	actions_dict = {
 		'actionOpen': 'action_open',
@@ -299,6 +306,21 @@ def setup_actions(parent): # setup menu actions
 			parent.actionClear_MDI_History.setEnabled(False)
 		if 'actionCopy_MDI_History' in parent.child_names:
 			parent.actionCopy_MDI_History.setEnabled(False)
+
+def setup_run_controls(parent):
+	file_run_items = ['run_pb', 'run_from_line_pb', 'step_pb', 'run_mdi_pb',
+	'actionRun', 'actionRun_From_Line', 'actionStep', 'tool_change_pb']
+	for item in file_run_items:
+		if item in parent.child_names:
+			parent.run_controls.append(item)
+	for i in range(100):
+		if f'tool_change_pb_{i}' in parent.child_names:
+			parent.run_controls.append(item)
+	for item in AXES:
+		if f'tool_touchoff_{item}' in parent.child_names:
+			run_items.append(f'tool_touchoff_{item}')
+		if f'touchoff_pb_{item}' in parent.child_names:
+			run_items.append(f'touchoff_pb_{item}')
 
 def setup_mdi(parent):
 	# mdi_command_le is required to run mdi commands

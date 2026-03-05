@@ -17,8 +17,12 @@ RESOURCES
 ** Menus **
 * File *
 Open
+Edit
 
 * Machine *
+E Stop
+Power
+Run
 
 * Programs *
 Show HAL

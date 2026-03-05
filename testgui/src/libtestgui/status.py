@@ -115,6 +115,14 @@ def update(parent):
 			parent.command.mode(emc.MODE_MANUAL)
 			utilities.update_mdi(parent)
 
+		# program is running
+		if parent.status.task_mode == emc.MODE_AUTO and parent.status.command_status == emc.RCS_EXEC:
+			for item in parent.program_running_disabled:
+				getattr(parent, item).setEnabled(False)
+		else:
+			for item in parent.program_running_disabled:
+				getattr(parent, item).setEnabled(True)
+
 		parent.task_mode = parent.status.task_mode
 
 	# **** TASK STATE ****
@@ -150,7 +158,16 @@ def update(parent):
 
 		parent.task_state = parent.status.task_state
 
-	# test for change to homed status
+	# **** FILE CHANGE ****
+	if parent.file != parent.status.file:
+		#print('File Changed')
+		if all(parent.status.homed[:parent.joints]) and parent.status.task_state == emc.STATE_ON:
+			for item in parent.run_controls:
+				getattr(parent, item).setEnabled(True)
+		parent.file = parent.status.file
+
+
+	# **** HOMED CHANGE ****
 	if parent.homed != parent.status.homed:
 		if parent.status.task_state == emc.STATE_ON:
 			utilities.update_home_controls(parent)

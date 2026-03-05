@@ -61,6 +61,11 @@ def read(parent):
 				f'{parent.nc_code_dir} will be used.')
 			dialogs.warn_msg_ok(parent, msg, 'Configuration Error')
 
+	# nc code editor
+	parent.editor = parent.inifile.find('DISPLAY', 'EDITOR') or False
+
+	# tool file editor
+	parent.tool_editor = parent.inifile.find('DISPLAY', 'TOOL_EDITOR') or False
 
 
 	# ***** [FLEXGUI] Section *****

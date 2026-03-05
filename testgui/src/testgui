@@ -87,6 +87,9 @@ class testgui(QMainWindow):
 		self.state = self.status.state
 		self.task_mode = self.status.task_mode
 		self.task_state = self.status.task_state
+		self.file = self.status.file
+		self.flood_state = self.status.flood
+		self.mist_state = self.status.mist
 
 		startup.find_children(self)
 		startup.setup_vars(self)
@@ -99,6 +102,7 @@ class testgui(QMainWindow):
 		startup.setup_jog(self)
 		startup.setup_plot(self)
 		startup.setup_hal(self)
+		startup.setup_run_controls(self)
 
 		startup.setup_defaults(self)
 

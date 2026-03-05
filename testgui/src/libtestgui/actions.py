@@ -1,4 +1,4 @@
-import subprocess, os
+import subprocess, os, shutil
 
 from PyQt6.QtWidgets import QMenu
 
@@ -93,6 +93,28 @@ def action_open(parent): # actionOpen
 	nc_code_file = utilities.file_chooser(parent, 'Open File', 'open')
 	if nc_code_file: load_file(parent, nc_code_file)
 
+def action_edit(parent): # actionEdit
+	parent.status.poll
+	nc_code_file = parent.status.file or False
+	if not nc_code_file:
+		msg = ('No File is open.\nDo you want to open a file?')
+		response = dialogs.warn_msg_yes_no(parent, msg, 'No File Loaded')
+		if response:
+			action_open(parent)
+			return
+		else:
+			return
+
+	if parent.editor:
+		if shutil.which(parent.editor.lower()) is not None:
+			subprocess.Popen([parent.editor, nc_code_file])
+		else:
+			select_editor(parent, nc_code_file)
+	else:
+		msg = ('No Editor was found\nin the ini Display section\n'
+			'Do you want to select an Editor?')
+		if dialogs.warn_msg_yes_no(parent, msg, 'No Editor Configured'):
+			select_editor(parent, nc_code_file)
 
 
 def action_estop(parent): # actionEstop
@@ -110,8 +132,14 @@ def action_power(parent): # actionPower
 	else:
 		parent.command.state(emc.STATE_OFF)
 
-def action_run (parent):
-	pass
+def action_run(parent): # actionRun
+	if parent.status.task_state == emc.STATE_ON:
+		if parent.status.task_mode != emc.MODE_AUTO:
+			parent.command.mode(emc.MODE_AUTO)
+			parent.command.wait_complete()
+		if 'start_line_lb' in parent.child_names:
+			parent.start_line_lb.setText('0')
+		parent.command.auto(emc.AUTO_RUN, 0)
 
 def action_run_from_line (parent):
 	pass
@@ -126,9 +154,6 @@ def action_resume (parent):
 	pass
 
 def action_stop (parent):
-	pass
-
-def action_edit (parent):
 	pass
 
 def action_reload (parent):
@@ -176,9 +201,44 @@ def action_about (parent):
 def action_quick_reference (parent):
 	pass
 
+def action_toggle_dro (parent):
+	pass
 
-def action_show_hal(parent): # actionShow_HAL
-	subprocess.Popen('halshow', cwd=parent.config_path)
+def action_toggle_limits (parent):
+	pass
+
+def action_toggle_extents_option (parent):
+	pass
+
+def action_toggle_live_plot (parent):
+	pass
+
+def action_toggle_velocity (parent):
+	pass
+
+def action_toggle_metric_units (parent):
+	pass
+
+def action_toggle_program (parent):
+	pass
+
+def action_toggle_rapids (parent):
+	pass
+
+def action_toggle_tool (parent):
+	pass
+
+def action_toggle_lathe_radius (parent):
+	pass
+
+def action_toggle_dtg (parent):
+	pass
+
+def action_toggle_offsets (parent):
+	pass
+
+def action_toggle_overlay (parent):
+	pass
 
 
 
