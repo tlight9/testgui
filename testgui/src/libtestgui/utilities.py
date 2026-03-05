@@ -150,7 +150,8 @@ def update_home_controls(parent):
 			if f'unhome_pb_{joint}' in parent.child_names:
 				getattr(parent, f'unhome_pb_{joint}').setEnabled(False)
 	if all(parent.status.homed[:parent.joints]):
-		parent.home_all_pb.setEnabled(False)
+		if 'home_all_pb' in parent.child_names:
+			parent.home_all_pb.setEnabled(False)
 		if 'unhome_all_pb' in parent.child_names:
 			parent.unhome_all_pb.setEnabled(True)
 	if not any(parent.status.homed[:parent.joints]):
