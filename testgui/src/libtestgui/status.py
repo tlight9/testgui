@@ -51,6 +51,9 @@ def update(parent):
 		#if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
 		#	parent.command.mode(emc.MODE_MANUAL)
 
+		#if parent.status.exec_state == emc.EXEC_DONE and parent.status.task_mode == emc.MODE_AUTO:
+		#	parent.command.mode(emc.MODE_MANUAL)
+
 		parent.exec_state = parent.status.exec_state
 
 	# **** INTERP STATE ****
@@ -61,9 +64,9 @@ def update(parent):
 			parent.interp_state_lb.setText(INTERP_STATES[parent.status.interp_state])
 
 		if parent.status.interp_state == emc.INTERP_IDLE:
-			if parent.status.task_mode == emc.MODE_AUTO:
-				pass
-			
+			utilities.update_run_controls(parent)
+
+
 
 		parent.interp_state = parent.status.interp_state
 
@@ -101,9 +104,10 @@ def update(parent):
 			parent.state_lb.setText(STATES[parent.status.state])
 
 		# this is needed for MDI commands that use motion
-		if parent.status.state == emc.RCS_DONE and parent.status.task_mode == emc.MODE_MDI:
+		if parent.status.state == emc.RCS_DONE:
+			if parent.status.task_mode == emc.MODE_MDI:
+				utilities.update_mdi(parent)
 			parent.command.mode(emc.MODE_MANUAL)
-			utilities.update_mdi(parent)
 
 		parent.state = parent.status.state
 
@@ -119,15 +123,7 @@ def update(parent):
 			parent.command.mode(emc.MODE_MANUAL)
 			utilities.update_mdi(parent)
 
-		# program is running
-		if parent.status.task_mode == emc.MODE_AUTO and parent.status.state == emc.RCS_EXEC:
-			for item in parent.program_running_disabled:
-				getattr(parent, item).setEnabled(False)
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(False)
-		else:
-			for item in parent.program_running_disabled:
-				getattr(parent, item).setEnabled(True)
+		utilities.update_run_controls(parent)
 
 		parent.task_mode = parent.status.task_mode
 
@@ -155,45 +151,39 @@ def update(parent):
 				getattr(parent, item).setEnabled(False)
 			for item in parent.state_estop_reset_enabled:
 				getattr(parent, item).setEnabled(True)
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(False)
 
 		# estop closed power on
 		if parent.status.task_state == emc.STATE_ON:
 			#print('status update STATE_ON')
 			for item in parent.state_on_enabled:
 				getattr(parent, item).setEnabled(True)
-		if all(parent.status.homed[:parent.joints]) and parent.status.task_state == emc.STATE_ON:
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(True)
+
+		utilities.update_run_controls(parent)
 
 		parent.task_state = parent.status.task_state
 
 	# **** FILE CHANGE ****
 	if parent.file != parent.status.file:
 		#print('File Changed')
-		if all(parent.status.homed[:parent.joints]) and parent.status.task_state == emc.STATE_ON:
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(True)
+		utilities.update_run_controls(parent)
+
 		parent.file = parent.status.file
 
 
-	# **** HOMED CHANGE ****
+	# **** HOMED CHANGE **** FIXME may not need to test for state on
 	if parent.homed != parent.status.homed:
 		if parent.status.task_state == emc.STATE_ON:
 			utilities.update_home_controls(parent)
-			if all(parent.status.homed[:parent.joints]) and parent.status.file != '':
-				for item in parent.run_controls:
-					getattr(parent, item).setEnabled(True)
+		utilities.update_run_controls(parent)
 
+		'''
 		if all(parent.status.homed[:parent.joints]):
 			for item in parent.homed_enabled:
 				getattr(parent, item).setEnabled(True)
 		else:
 			for item in parent.homed_enabled:
 				getattr(parent, item).setEnabled(False)
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(False)
+		'''
 
 		parent.homed = parent.status.homed
 

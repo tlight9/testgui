@@ -59,6 +59,7 @@ def setup_enables(parent):
 	parent.homed_enabled = []
 	parent.program_running_disabled = []
 	parent.run_controls = [] # enabled when homed, manual, file loaded
+	parent.file_load_controls = [] # disable when a program or mdi is running
 
 	# STATE_ESTOP everything is disabled except the estop and file open save etc.
 	state_estop_items = ['power_pb', 'run_pb', 'run_from_line_pb',
@@ -257,7 +258,7 @@ def setup_buttons(parent): # connect buttons to functions
 	for child in parent.findChildren(QPushButton):
 		if child.property('function') == 'load_file':
 			child.clicked.connect(partial(actions.load_file, parent))
-			parent.program_running_disabled.append(child.objectName())
+			parent.file_load_controls.append(child.objectName())
 
 def setup_actions(parent): # setup menu actions
 	actions_dict = {

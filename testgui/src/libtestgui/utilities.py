@@ -2,6 +2,8 @@ import re, os
 
 from PyQt6.QtWidgets import QFileDialog
 
+import linuxcnc as emc
+
 from libtestgui import dialogs
 
 def is_number(string):
@@ -109,7 +111,6 @@ def file_chooser(parent, caption, dialog_type, nc_code_dir=None):
 	else:
 		return False
 
-
 def update_mdi(parent):
 	if 'mdi_history_lw' in parent.child_names:
 		rows = parent.mdi_history_lw.count()
@@ -157,6 +158,26 @@ def update_home_controls(parent):
 			parent.home_all_pb.setEnabled(True)
 		if 'unhome_all_pb' in parent.child_names:
 			parent.unhome_all_pb.setEnabled(False)
+
+def update_run_controls(parent):
+	# program loaded and all homed and not running a program enable
+	if parent.status.file != '' and all(parent.status.homed[:parent.joints]):
+		if parent.status.task_mode == emc.MODE_MANUAL and parent.status.task_state == emc.STATE_ON:
+			for item in parent.run_controls:
+				getattr(parent, item).setEnabled(True)
+		else:
+			for item in parent.run_controls:
+				getattr(parent, item).setEnabled(False)
+	else:
+		for item in parent.run_controls:
+			getattr(parent, item).setEnabled(False)
+
+	if parent.status.task_mode == emc.MODE_AUTO:
+		for item in parent.file_load_controls:
+			getattr(parent, item).setEnabled(False)
+	elif parent.status.task_mode == emc.MODE_MANUAL:
+		for item in parent.file_load_controls:
+			getattr(parent, item).setEnabled(True)
 
 
 def set_hal_enables(parent, obj):
