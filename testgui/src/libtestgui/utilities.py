@@ -160,25 +160,24 @@ def update_home_controls(parent):
 			parent.unhome_all_pb.setEnabled(False)
 
 def update_run_controls(parent):
-	# program loaded and all homed and not running a program enable
-	if parent.status.file != '' and all(parent.status.homed[:parent.joints]):
-		if parent.status.task_mode == emc.MODE_MANUAL and parent.status.task_state == emc.STATE_ON:
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(True)
-		else:
-			for item in parent.run_controls:
-				getattr(parent, item).setEnabled(False)
-	else:
-		for item in parent.run_controls:
-			getattr(parent, item).setEnabled(False)
-
-	if parent.status.task_mode == emc.MODE_AUTO:
-		for item in parent.file_load_controls:
-			getattr(parent, item).setEnabled(False)
-	elif parent.status.task_mode == emc.MODE_MANUAL:
+	if parent.status.task_mode == emc.MODE_MANUAL:
 		for item in parent.file_load_controls:
 			getattr(parent, item).setEnabled(True)
+		if (all(parent.status.homed[:parent.joints])
+			and parent.status.task_state == emc.STATE_ON):
+			for item in parent.mdi_controls:
+				getattr(parent, item).setEnabled(True)
+			if parent.status.file != '':
+				for item in parent.run_controls:
+					getattr(parent, item).setEnabled(True)
 
+	elif parent.status.task_mode == emc.MODE_AUTO:
+		for item in parent.file_load_controls:
+			getattr(parent, item).setEnabled(False)
+		for item in parent.run_controls:
+			getattr(parent, item).setEnabled(False)
+		for item in parent.mdi_controls:
+			getattr(parent, item).setEnabled(False)
 
 def set_hal_enables(parent, obj):
 	obj_name = obj.objectName()

@@ -60,6 +60,7 @@ def setup_enables(parent):
 	parent.program_running_disabled = []
 	parent.run_controls = [] # enabled when homed, manual, file loaded
 	parent.file_load_controls = [] # disable when a program or mdi is running
+	parent.mdi_controls = []
 
 	# STATE_ESTOP everything is disabled except the estop and file open save etc.
 	state_estop_items = ['power_pb', 'run_pb', 'run_from_line_pb',
@@ -351,6 +352,7 @@ def setup_mdi_buttons(parent):
 				button.clicked.connect(partial(commands.mdi_button, parent))
 				parent.state_estop_disabled.append(name)
 				parent.homed_enabled.append(name)
+				parent.mdi_controls.append(name)
 
 def setup_jog(parent):
 	jog_buttons = []
