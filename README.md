@@ -36,10 +36,17 @@ Show HAL
 Push Buttons
 Estop
 Power
+Run
+Run From Line
+Step
+Pause
+Resume
+
 Home All
 Home Axis
 Unhome All
 Unhome Axis
+
 Quit
 
 ** Jogging **
