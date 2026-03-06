@@ -997,6 +997,11 @@ def setup_plain_text_edits(parent):
 def setup_defaults(parent):
 	if parent.open_file and parent.open_file != '""':
 		actions.load_file(parent, parent.open_file)
+	else:
+		if 'reload_pb' in parent.child_names:
+			parent.reload_pb.setEnabled(False)
+		if 'actionReload' in parent.child_names:
+			parent.actionReload.setEnabled(False)
 
 
 def setup_tools(parent):

@@ -18,6 +18,7 @@ RESOURCES
 * File *
 Open
 Edit
+Reload
 
 * Machine *
 E Stop

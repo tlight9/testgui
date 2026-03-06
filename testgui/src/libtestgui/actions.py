@@ -42,6 +42,10 @@ def load_file(parent, nc_code_file=None):
 			getattr(parent, item).setEnabled(True)
 		if 'start_line_lb' in parent.child_names:
 			parent.start_line_lb.setText('0')
+		if 'reload_pb' in parent.child_names:
+			parent.reload_pb.setEnabled(True)
+		if 'actionReload' in parent.child_names:
+			parent.actionReload.setEnabled(True)
 
 		if not load_file_btn: # called by menu or file open button
 			# get recent files from settings
@@ -162,8 +166,20 @@ def action_resume(parent): # actionResume
 def action_stop(parent): # actionStop
 	parent.command.abort()
 
-def action_reload (parent):
-	pass
+def action_reload(parent): # actionReload
+	if parent.status.task_mode != emc.MODE_MANUAL:
+		parent.command.mode(emc.MODE_MANUAL)
+		parent.command.wait_complete()
+	parent.command.program_open(parent.status.file)
+	if 'plot_widget' in parent.child_names:
+		parent.plotter.clear_live_plotter()
+		parent.plotter.update()
+		parent.plotter.load(parent.status.file)
+	if 'gcode_pte' in parent.child_names:
+		with open(parent.status.file) as f:
+			parent.gcode_pte.setPlainText(f.read())
+
+
 
 def action_save (parent):
 	pass
