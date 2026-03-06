@@ -1,6 +1,7 @@
 import re, os
 
-from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtGui import QColor, QTextFormat
+from PyQt6.QtWidgets import QFileDialog, QTextEdit
 
 import linuxcnc as emc
 
@@ -252,6 +253,22 @@ def change_page(parent):
 	index = int(parent.sender().property('index'))
 	getattr(parent, object_name).setCurrentIndex(index)
 
+def update_qcode_pte(parent):
+	extraSelections = []
+	if not parent.gcode_pte.isReadOnly():
+		selection = QTextEdit.ExtraSelection()
+		lineColor = QColor('yellow').lighter(160)
+		selection.format.setBackground(lineColor)
+		selection.format.setForeground(QColor('black'))
+		selection.format.setProperty(QTextFormat.Property.FullWidthSelection, True)
+		selection.cursor = parent.gcode_pte.textCursor()
+		selection.cursor.clearSelection()
+		extraSelections.append(selection)
+	parent.gcode_pte.setExtraSelections(extraSelections)
+	if 'start_line_lb' in parent.child_names:
+		cursor = parent.gcode_pte.textCursor()
+		selected_block = cursor.blockNumber() # get current block number
+		parent.start_line_lb.setText(f'{selected_block}')
 
 
 

@@ -191,13 +191,24 @@ def update(parent):
 
 		parent.file = parent.status.file
 
-
 	# **** HOMED CHANGE ****
 	if parent.homed != parent.status.homed:
 		utilities.update_home_controls(parent)
 		utilities.update_run_controls(parent)
 
 		parent.homed = parent.status.homed
+
+	# **** MOTION LINE CHANGE ****
+	if parent.motion_line != parent.status.motion_line:
+		print(parent.status.motion_line)
+		if 'gcode_pte' in parent.child_names:
+			if parent.motion_line != parent.last_line:
+				cursor = parent.gcode_pte.textCursor()
+				cursor = QTextCursor(parent.gcode_pte.document().findBlockByNumber(parent.motion_line))
+				cursor.movePosition(QTextCursor.MoveOperation.StartOfBlock, QTextCursor.MoveMode.MoveAnchor)
+				parent.gcode_pte.setTextCursor(cursor)
+				parent.last_line = parent.motion_line
+		parent.motion_line = parent.status.motion_line
 
 	# axis position no offsets
 	for key, value in parent.status_position.items(): # key is label value precision

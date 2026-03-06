@@ -49,6 +49,7 @@ def setup_vars(parent):
 	parent.g_codes = ()
 	parent.homed = ()
 	parent.program_paused = False
+	parent.motion_line = -1
 
 def setup_enables(parent):
 
@@ -979,6 +980,19 @@ def setup_hal(parent):
 					text_list.append(text)
 				i += 1
 			parent.hal_ms_labels[label_name] = [pin_name, text_list]
+
+def setup_plain_text_edits(parent):
+	# for gcode_pte update
+	parent.motion_line = -1
+	if 'gcode_pte' in parent.child_names:
+		parent.gcode_pte.setCenterOnScroll(True)
+		parent.gcode_pte.ensureCursorVisible()
+		parent.gcode_pte.viewport().installEventFilter(parent)
+		parent.gcode_pte.cursorPositionChanged.connect(partial(utilities.update_qcode_pte, parent))
+		#parent.status.poll()
+		parent.last_line = parent.status.motion_line
+		#parent.gcode_pte.textChanged.connect(partial(utilities.nc_code_changed, parent))
+
 
 def setup_defaults(parent):
 	if parent.open_file and parent.open_file != '""':
