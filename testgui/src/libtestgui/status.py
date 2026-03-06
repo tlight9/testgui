@@ -200,7 +200,7 @@ def update(parent):
 
 	# **** MOTION LINE CHANGE ****
 	if parent.motion_line != parent.status.motion_line:
-		print(parent.status.motion_line)
+		#print(parent.status.motion_line)
 		if 'gcode_pte' in parent.child_names:
 			if parent.motion_line != parent.last_line:
 				cursor = parent.gcode_pte.textCursor()

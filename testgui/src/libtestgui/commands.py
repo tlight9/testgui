@@ -49,7 +49,6 @@ def unhome_all(parent):
 def run_mdi(parent):
 	mdi_command = parent.mdi_command_le.text()
 	if mdi_command:
-		print(f'mdi_command {mdi_command}')
 		if parent.status.task_state == emc.STATE_ON:
 			if parent.status.task_mode == emc.MODE_MANUAL:
 				parent.command.mode(emc.MODE_MDI)
@@ -61,7 +60,6 @@ def add_mdi(parent): # when you click on the mdi history list widget
 
 def mdi_button(parent):
 	mdi_command = parent.sender().property('command')
-	print(f'*** MDI Command *** {mdi_command}')
 	parent.status.poll()
 	if parent.status.task_state == emc.STATE_ON:
 		if parent.status.task_mode == emc.MODE_MANUAL:
@@ -89,13 +87,9 @@ def set_jog_override(parent):
 
 def jog(parent): # only do jog check if button is down
 	jog_command = parent.sender().objectName().split('_')
-	#print(f'jog_command {jog_command}')
 	joint = int(jog_command[-1])
-	#print(f'joint {joint}')
 	increment = parent.jog_modes_cb.currentData()
-	#print(f'increment {increment}')
 	joint_jog_mode = True if parent.motion_mode == emc.TRAJ_MODE_FREE else False
-	#print(f'joint_jog_mode {joint_jog_mode}')
 	vel = parent.jog_vel_sl.value() / 60
 	if 'minus' in jog_command:
 		vel = -vel

@@ -19,7 +19,6 @@ from libtestgui import utilities
 AXES = ['x', 'y', 'z', 'a', 'b', 'c', 'u', 'v', 'w']
 
 def find_children(parent): # get the object names of all widgets
-	#print('finding the buggers')
 	parent.child_names = []
 	children = parent.findChildren(QWidget)
 	for child in children:
@@ -40,9 +39,6 @@ def find_children(parent): # get the object names of all widgets
 	for menu in menus:
 		if menu.objectName():
 			parent.child_names.append(menu.objectName())
-
-	#for name in parent.child_names:
-	#	print(name)
 
 def setup_vars(parent):
 	parent.program_units = False
@@ -180,8 +176,6 @@ def setup_enables(parent):
 		if item not in parent.child_names:
 			parent.program_running_disable.remove(item)
 
-
-
 def setup_status(parent):
 	# Actual Position labels no offsets
 	parent.status_position = {} # create an empty dictionary
@@ -192,15 +186,11 @@ def setup_status(parent):
 			p = p if p is not None else parent.default_precision
 			parent.status_position[f'{label}'] = [i, p] # label , joint & precision
 
-	#for key, value in parent.status_position.items():
-	#	print(type(value[0]))
-
 	# G5x Offset Labels
 	parent.status_g5x_offset = {} # create an empty dictionary
 	for i, axis in enumerate(AXES):
 		label = f'g5x_lb_{axis}'
 		if label in parent.child_names:
-			#print(label)
 			p = getattr(parent, label).property('precision')
 			p = p if p is not None else parent.default_precision
 			parent.status_g5x_offset[f'{label}'] = [i, p] # add the label, tuple position & precision
@@ -810,7 +800,6 @@ def setup_hal(parent):
 
 			utilities.set_hal_enables(parent, child)
 
-
 	##### HAL LABEL #####
 	if len(hal_labels) > 0:
 		valid_types = ['HAL_BIT', 'HAL_FLOAT', 'HAL_S32', 'HAL_U32']
@@ -820,7 +809,6 @@ def setup_hal(parent):
 			hal_type = label.property('hal_type')
 			true_text = label.property('true_text')
 			false_text = label.property('false_text')
-			#print(true_text, false_text)
 			if any([true_text, false_text]):
 				if not all([true_text, false_text]):
 					label.setEnabled(False)
