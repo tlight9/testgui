@@ -66,7 +66,7 @@ Jog Minus Axis
 plot_widget
 DRO Font
 Background Color
-Display Settings Buttons
+Display Settings Checkboxes
 
 ** MDI **
 Command Line Edit
