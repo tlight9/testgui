@@ -203,6 +203,7 @@ def action_save(parent): # actionSave
 	nc_code = text.splitlines()
 	with open(parent.status.file, 'w') as f:
 		f.writelines(line + "\n" for line in nc_code)
+	parent.statusBar().showMessage('Save Action completed!', 10000)
 
 def action_save_as(parent): # actionSave_As
 	if os.path.isdir(os.path.expanduser('~/linuxcnc/nc_files')):
