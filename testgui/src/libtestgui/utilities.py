@@ -7,6 +7,20 @@ import linuxcnc as emc
 
 from libtestgui import dialogs
 
+def is_float(string):
+	try:
+		float(string)
+		return True
+	except ValueError:
+		return False
+
+def is_int(string):
+	try:
+		int(string)
+		return True
+	except ValueError:
+		return False
+
 def is_number(string):
 	try:
 		int(string)

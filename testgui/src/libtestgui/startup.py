@@ -483,6 +483,15 @@ def setup_plot(parent):
 		layout = QVBoxLayout(parent.plot_widget)
 		layout.addWidget(parent.plotter)
 
+		# set the font size
+		parent.plotter._font = f'monospace bold {parent.dro_font_size}'
+
+		# set background color if specified
+		if parent.plot_background_color:
+			parent.plotter.background_color = parent.plot_background_color
+		print(parent.plot_background_color)
+
+
 def setup_hal(parent):
 	hal_labels = []
 	hal_avr_float_labels = [] # average float labels

@@ -64,6 +64,8 @@ Jog Minus Axis
 
 ** Plotter **
 plot_widget
+DRO Font
+Background Color
 
 ** MDI **
 Command Line Edit

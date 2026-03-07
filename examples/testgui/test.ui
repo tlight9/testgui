@@ -238,7 +238,7 @@
     <item row="3" column="3" rowspan="2" colspan="5">
      <widget class="QTabWidget" name="tabWidget_6">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -246,7 +246,245 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QWidget" name="plot_widget" native="true"/>
+         <widget class="QTabWidget" name="tabWidget_2">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_11">
+           <attribute name="title">
+            <string>Plotter</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_18">
+            <item row="8" column="5">
+             <widget class="QPushButton" name="view_z_pb">
+              <property name="text">
+               <string>Z</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="9">
+             <widget class="QPushButton" name="view_pan_left_pb">
+              <property name="text">
+               <string>Pan Left</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="7">
+             <widget class="QPushButton" name="view_zoom_in_pb">
+              <property name="text">
+               <string>In</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="9">
+             <widget class="QPushButton" name="view_rotate_down_pb">
+              <property name="text">
+               <string>Rotate Down</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="6">
+             <widget class="QPushButton" name="view_z2_pb">
+              <property name="text">
+               <string>Z2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="9">
+             <widget class="QPushButton" name="view_pan_up_pb">
+              <property name="text">
+               <string>Pan Up</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="8">
+             <widget class="QPushButton" name="view_zoom_out_pb">
+              <property name="text">
+               <string>Out</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="9">
+             <widget class="QPushButton" name="view_clear_pb">
+              <property name="text">
+               <string>Clear</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="9">
+             <widget class="QPushButton" name="view_rotate_right_pb">
+              <property name="text">
+               <string>Rotate Right</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="3">
+             <widget class="QPushButton" name="view_y_pb">
+              <property name="text">
+               <string>Y</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="4">
+             <widget class="QPushButton" name="view_y2_pb">
+              <property name="text">
+               <string>Y2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="9">
+             <widget class="QPushButton" name="view_rotate_left_pb">
+              <property name="text">
+               <string>Rotate Left</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="9">
+             <widget class="QPushButton" name="view_pan_down_pb">
+              <property name="text">
+               <string>Pan Down</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="9">
+             <widget class="QPushButton" name="view_rotate_up_pb">
+              <property name="text">
+               <string>Rotate Up</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="9">
+             <widget class="QPushButton" name="view_pan_right_pb">
+              <property name="text">
+               <string>Pan Right</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="2">
+             <widget class="QPushButton" name="view_p_pb">
+              <property name="text">
+               <string>P</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0" colspan="2">
+             <widget class="QPushButton" name="view_x_pb">
+              <property name="text">
+               <string>X</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" rowspan="8" colspan="9">
+             <widget class="QWidget" name="plot_widget" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_12">
+           <attribute name="title">
+            <string>Settings</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_17">
+            <item row="0" column="1">
+             <widget class="QPushButton" name="pushButton_21">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_23">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushButton_20">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="pushButton_22">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButton_24">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QPushButton" name="pushButton_26">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="pushButton_19">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QPushButton" name="pushButton_25">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="checkBox">
+              <property name="text">
+               <string>CheckBox</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="checkBox_2">
+              <property name="text">
+               <string>CheckBox</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="checkBox_3">
+              <property name="text">
+               <string>CheckBox</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QCheckBox" name="checkBox_4">
+              <property name="text">
+               <string>CheckBox</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QCheckBox" name="checkBox_17">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QCheckBox" name="checkBox_18">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>

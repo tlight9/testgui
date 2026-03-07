@@ -2,6 +2,7 @@ import os, subprocess
 
 from PyQt6.QtCore import QSettings
 
+from libtestgui import utilities
 from libtestgui import dialogs
 
 def read(parent):
@@ -98,6 +99,33 @@ def read(parent):
 			dialogs.warn_msg_ok(parent, msg, 'INI Configuration ERROR!')
 			parent.qss_file = False
 
+	# check for dro font size
+	parent.dro_font_size = parent.inifile.find('FLEXGUI', 'DRO_FONT_SIZE') or '12'
+	if not utilities.is_int(parent.dro_font_size): # not an int
+		msg = (f'The FLEXGUI DRO_FONT_SIZE did not\n'
+			'evaluate to an integer value.\n'
+			'The DRO_FONT_SIZE will be set to 12.')
+		dialogs.warn_msg_ok(parent, msg, 'INI Configuration ERROR!')
+	else:
+		parent.dro_font_size =  int(parent.dro_font_size)
+
+	# plotter background color
+	color_string = parent.inifile.find('FLEXGUI', 'PLOT_BACKGROUND_COLOR') or False
+	if color_string:
+		components = [c.strip() for c in color_string.split(',')]
+		if len(components) == 3:
+			for comp in components:
+				value = float(comp)
+				if not (0.0 <= value <= 1.0):
+					parent.plot_background_color = False
+					msg = ('The PLOT_BACKGROUND_COLOR in the\n'
+					f'FLEXGUI section {color_string} is not valid.\n'
+					'The plot background color will be black')
+					dialogs.error_msg_ok(parent, msg, 'Configuration Error')
+					break
+				parent.plot_background_color = tuple(map(float, color_string.split(',')))
+	else:
+		parent.plot_background_color = False
 
 	# ***** [KINS] Section *****
 	# this ini file items will cause EMC to fail to load if missing
