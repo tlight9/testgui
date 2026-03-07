@@ -1,17 +1,23 @@
 
 QMenuBar {
-background-color: #333;
-color: white;
+	background-color: #333;
+	color: white;
 }
 
 QMenu {
-background-color: #333;
-color: white;
+	background-color: #333;
+	color: white;
 }
 
 QMenu::item:selected {
-background-color: #555;
+	background-color: #555;
 }
+
+QMenu::item:disabled {
+	color: #a3a3a3;
+	background-color: #f3f3f3;
+}
+
 
 /* Specific Style for actionPower */
 QAction#actionPower {
@@ -22,14 +28,6 @@ color: #FF5555; /* Red color */
 QAction#actionPower:hover {
 background-color: #880000;
 color: white;
-}
-
-
-QAction#actionPower {
-	background-color: #ffcccc;
-	color: red;
-	font-weight: bold;
-	padding: 5px 10px;
 }
 
 
@@ -50,6 +48,14 @@ QPushButton:pressed {
 	border-color: #999999 #ffffff #ffffff #999999; /* Top Right Bottom Left */
 	padding: 4px;
 }
+
+/* Light theme disabled button example */
+QPushButton:disabled {
+	background-color: #e0e0e0; /* A light gray background */
+	color: #a0a0a0;            /* A muted, readable gray text */
+	border: 1px solid #c0c0c0; /* A light border */
+}
+
 
 QPushButton#estop_pb {
 	background-color: #55ff7f;
@@ -72,21 +78,17 @@ QPushButton#power_pb {
 	border-width: 2px;
 	border-radius: 6px;
 	padding: 2;
-
 }
-
 
 QPushButton#power_pb:checked {
 	color: #ffff00;
 	background-color: #ff0000;
-
 }
 
 QPushButton#power_pb:disabled {
 	color: #a3a3a3;
 	background-color: #f3f3f3;
 	border-color: #b1b1b1;
-
 }
 
 
