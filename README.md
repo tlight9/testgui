@@ -36,6 +36,8 @@ Stop
 
 * Programs *
 Show HAL
+HAL Meter
+HAL Scope
 
 ** Controls **
 Push Buttons
