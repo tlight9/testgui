@@ -1029,10 +1029,7 @@ def setup_plain_text_edits(parent):
 		parent.gcode_pte.ensureCursorVisible()
 		parent.gcode_pte.viewport().installEventFilter(parent)
 		parent.gcode_pte.cursorPositionChanged.connect(partial(utilities.update_qcode_pte, parent))
-		#parent.status.poll()
 		parent.last_line = parent.status.motion_line
-		#parent.gcode_pte.textChanged.connect(partial(utilities.nc_code_changed, parent))
-
 
 def setup_defaults(parent):
 	if parent.open_file and parent.open_file != '""':
@@ -1047,6 +1044,52 @@ def setup_defaults(parent):
 		if 'actionSave_As' in parent.child_names:
 			parent.actionSave_As.setEnabled(False)
 
+	# check to see if the PLOT group is in settings
+	if 'plot_widget' in parent.child_names:
+		groups = parent.settings.childGroups()
+		if 'Plot_Settings' not in groups:
+			parent.settings.beginGroup('Plot_Settings')
+			parent.settings.setValue('show_dro', 'True')
+			parent.settings.setValue('show_limits', 'True')
+			parent.settings.setValue('show_live_plot', 'True')
+			parent.settings.setValue('show_velocity', 'True')
+			parent.settings.setValue('show_program', 'True')
+			parent.settings.setValue('show_rapids', 'True')
+			parent.settings.setValue('show_tool', 'True')
+			parent.settings.endGroup()
+			parent.settings.sync() # Ensure data is written to storage
+			default_plot_cb = ['view_dro_cb', 'view_limits_cb', 'view_live_plot_cb',
+			'view_velocity_cb', 'view_program_cb', 'view_rapids_cb', 'view_tool_cb']
+			for item in default_plot_cb:
+				if item in parent.child_names:
+					getattr(parent, item).blockSignals(True)
+					getattr(parent, item).setChecked(True)
+					getattr(parent, item).blockSignals(False)
+		else:
+			view_checkboxes = {
+				'view_dro_cb': ['action_toggle_dro', 'enable_dro'],
+				'view_limits_cb': ['action_toggle_limits', 'show_limits'],
+				'view_extents_option_cb': ['action_toggle_extents_option', 'show_extents_option'],
+				'view_live_plot_cb': ['action_toggle_live_plot', 'show_live_plot'],
+				'view_velocity_cb': ['action_toggle_velocity', 'show_velocity'],
+				'view_metric_units_cb': ['action_toggle_metric_units', 'metric_units'],
+				'view_program_cb': ['action_toggle_program', 'show_program'],
+				'view_rapids_cb': ['action_toggle_rapids', 'show_rapids'],
+				'view_tool_cb': ['action_toggle_tool', 'show_tool'],
+				'view_lathe_radius_cb': ['action_toggle_lathe_radius', 'show_lathe_radius'],
+				'view_dtg_cb': ['action_toggle_dtg', 'show_dtg'],
+				'view_offsets_cb': ['action_toggle_offsets', 'show_offsets'],
+				'view_overlay_cb': ['action_toggle_overlay', 'show_overlay']
+			}
+
+			for key, value in view_checkboxes.items():
+				if key in parent.child_names:
+					if parent.settings.contains(f'Plot_Settings/{value[1]}'):
+						checked_state = parent.settings.value(f'Plot_Settings/{value[1]}', type=bool)
+						if checked_state:
+							getattr(parent, key).setChecked(checked_state)
+						else:
+							getattr(actions, value[0])(parent, False)
 
 def setup_tools(parent):
 	pass

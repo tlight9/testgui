@@ -258,110 +258,137 @@ def action_about (parent):
 def action_quick_reference (parent):
 	pass
 
-def action_toggle_dro (parent):
-	if parent.sender().isChecked():
+def action_toggle_dro (parent, checked):
+	if checked:
 		parent.plotter.enable_dro = True
+		parent.settings.setValue('Plot_Settings/show_dro', 'True')
 	else:
 		parent.plotter.enable_dro = False
+		parent.settings.setValue('Plot_Settings/show_dro', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_limits (parent):
-	if parent.sender().isChecked():
+def action_toggle_limits (parent, checked):
+	if checked:
 		parent.plotter.show_limits = True
+		parent.settings.setValue('Plot_Settings/show_limits', 'True')
 	else:
 		parent.plotter.show_limits = False
+		parent.settings.setValue('Plot_Settings/show_limits', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_extents_option (parent):
-	if parent.sender().isChecked():
+def action_toggle_extents_option (parent, checked):
+	if checked:
 		parent.plotter.show_extents_option = True
+		parent.settings.setValue('Plot_Settings/show_extents_option', 'True')
 	else:
 		parent.plotter.show_extents_option = False
+		parent.settings.setValue('Plot_Settings/show_extents_option', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_live_plot (parent):
-	if parent.sender().isChecked():
+def action_toggle_live_plot (parent, checked):
+	if checked:
 		parent.plotter.show_live_plot = True
+		parent.settings.setValue('Plot_Settings/show_live_plot', 'True')
 	else:
 		parent.plotter.show_live_plot = False
+		parent.settings.setValue('Plot_Settings/show_live_plot', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_velocity (parent):
-	if parent.sender().isChecked():
+def action_toggle_velocity (parent, checked):
+	if checked:
 		parent.plotter.show_velocity = True
+		parent.settings.setValue('Plot_Settings/show_velocity', 'True')
 	else:
 		parent.plotter.show_velocity = False
+		parent.settings.setValue('Plot_Settings/show_velocity', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_metric_units (parent):
+def action_toggle_metric_units (parent, checked):
 	if not parent.auto_plot_units:
-		if parent.sender().isChecked():
+		if checked:
 			parent.plotter.metric_units = True
+			parent.settings.setValue('Plot_Settings/metric_units', 'True')
 		else:
 			parent.plotter.metric_units = False
+			parent.settings.setValue('Plot_Settings/metric_units', 'False')
 		parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_program (parent):
-	if parent.sender().isChecked():
+def action_toggle_program (parent, checked):
+	if checked:
 		parent.plotter.show_program = True
+		parent.settings.setValue('Plot_Settings/show_program', 'True')
 	else:
 		parent.plotter.show_program = False
+		parent.settings.setValue('Plot_Settings/show_program', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_rapids (parent):
-	if parent.sender().isChecked():
+def action_toggle_rapids (parent, checked):
+	if checked:
 		parent.plotter.show_rapids = True
+		parent.settings.setValue('Plot_Settings/show_rapids', 'True')
 	else:
 		parent.plotter.show_rapids = False
+		parent.settings.setValue('Plot_Settings/show_rapids', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_tool (parent):
-	if parent.sender().isChecked():
+def action_toggle_tool (parent, checked):
+	if checked:
 		parent.plotter.show_tool = True
+		parent.settings.setValue('Plot_Settings/show_tool', 'True')
 	else:
 		parent.plotter.show_tool = False
+		parent.settings.setValue('Plot_Settings/show_tool', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_lathe_radius (parent):
-	if parent.sender().isChecked():
+def action_toggle_lathe_radius (parent, checked):
+	if checked:
 		parent.plotter.show_lathe_radius = True
+		parent.settings.setValue('Plot_Settings/show_lathe_radius', 'True')
 	else:
 		parent.plotter.show_lathe_radius = False
+		parent.settings.setValue('Plot_Settings/show_lathe_radius', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_dtg (parent):
-	if parent.sender().isChecked():
+def action_toggle_dtg (parent, checked):
+	if checked:
 		parent.plotter.show_dtg = True
+		parent.settings.setValue('Plot_Settings/show_dtg', 'True')
 	else:
 		parent.plotter.show_dtg = False
+		parent.settings.setValue('Plot_Settings/show_dtg', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_offsets (parent):
-	if parent.sender().isChecked():
+def action_toggle_offsets (parent, checked):
+	if checked:
 		parent.plotter.show_offsets = True
+		parent.settings.setValue('Plot_Settings/show_offsets', 'True')
 	else:
 		parent.plotter.show_offsets = False
+		parent.settings.setValue('Plot_Settings/show_offsets', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
 
-def action_toggle_overlay (parent):
-	if parent.sender().isChecked():
+def action_toggle_overlay (parent, checked):
+	if checked:
 		parent.plotter.show_overlay = False
+		parent.settings.setValue('Plot_Settings/show_overlay', 'True')
 	else:
 		parent.plotter.show_overlay = True
+		parent.settings.setValue('Plot_Settings/show_overlay', 'False')
 	parent.plotter.update()
-	print(parent.sender().objectName())
+	parent.settings.sync()
+
 
 
 
