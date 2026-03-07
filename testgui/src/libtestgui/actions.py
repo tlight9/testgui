@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QFileDialog, QMenu
 import linuxcnc as emc
 
 from libtestgui import utilities
+from libtestgui import dialogs
 
 def load_file(parent, nc_code_file=None):
 	# File load buttons don't pass a file name it has to be read from the property
