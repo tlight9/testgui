@@ -1,4 +1,4 @@
-import os
+import os, subprocess
 
 from PyQt6.QtCore import QSettings
 
@@ -63,10 +63,20 @@ def read(parent):
 
 	# nc code editor
 	parent.editor = parent.inifile.find('DISPLAY', 'EDITOR') or False
+	if parent.editor:
+		try:
+			# Use subprocess.run with check=True to raise an exception on error
+			# We can capture stderr to avoid printing output to the console
+			subprocess.run(["dpkg", "-s", parent.editor], check=True, capture_output=True)
+		except subprocess.CalledProcessError:
+			# A non-zero exit code means the package is not installed or dpkg failed
+			parent.editor = False
+		except FileNotFoundError:
+			# Handle the case where the 'dpkg' command itself isn't found (highly unlikely on Debian)
+			print("Error: dpkg command not found.")
 
 	# tool file editor
 	parent.tool_editor = parent.inifile.find('DISPLAY', 'TOOL_EDITOR') or False
-
 
 	# ***** [FLEXGUI] Section *****
 

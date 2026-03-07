@@ -288,7 +288,8 @@ def setup_buttons(parent): # connect buttons to functions
 		parent.file_edit_items.remove('edit_pb')
 		parent.edit_pb.setEnabled(False)
 		msg = ('The Edit button was found but no\n'
-		'editor was found in the ini file.\n'
+		'editor was found in the ini file\n'
+		'or the editor is not installed\n'
 		'The Edit button will be disabled.')
 		dialogs.error_msg_ok(parent, msg, 'Configuration Error')
 
@@ -374,6 +375,7 @@ def setup_actions(parent): # setup menu actions
 		parent.actionEdit.setEnabled(False)
 		msg = ('The Edit Menu was found but no\n'
 		'editor was found in the ini file.\n'
+		'or the editor is not installed\n'
 		'The Edit Menu will be disabled.')
 		dialogs.error_msg_ok(parent, msg, 'Configuration Error')
 
