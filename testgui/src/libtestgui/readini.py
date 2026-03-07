@@ -99,7 +99,10 @@ def read(parent):
 			dialogs.warn_msg_ok(parent, msg, 'INI Configuration ERROR!')
 			parent.qss_file = False
 
-	# check for dro font size
+	# check for auto dro units
+	parent.auto_dro_units = parent.inifile.find('FLEXGUI', 'DRO_UNITS') or False
+
+	# check for plotter dro font size
 	parent.dro_font_size = parent.inifile.find('FLEXGUI', 'DRO_FONT_SIZE') or '12'
 	if not utilities.is_int(parent.dro_font_size): # not an int
 		msg = (f'The FLEXGUI DRO_FONT_SIZE did not\n'
@@ -126,6 +129,18 @@ def read(parent):
 				parent.plot_background_color = tuple(map(float, color_string.split(',')))
 	else:
 		parent.plot_background_color = False
+
+	# set the default plotter view
+	if parent.inifile.find('DISPLAY', 'LATHE') is not None:
+		parent.default_view = 'y'
+	elif parent.inifile.find('FLEXGUI', 'PLOT_VIEW') is not None:
+		parent.default_view = parent.inifile.find('FLEXGUI', 'PLOT_VIEW')
+	else:
+		parent.default_view = 'p'
+
+	# plotter units follow current program units
+	parent.auto_plot_units = parent.inifile.find('FLEXGUI', 'PLOT_UNITS') or False
+
 
 	# ***** [KINS] Section *****
 	# this ini file items will cause EMC to fail to load if missing

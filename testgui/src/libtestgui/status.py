@@ -210,6 +210,15 @@ def update(parent):
 				parent.last_line = parent.motion_line
 		parent.motion_line = parent.status.motion_line
 
+	# **** PROGRAM UNITS CHANGE ****
+	if parent.auto_plot_units and parent.program_units != parent.plot_units:
+		if parent.program_units == 'INCH': # inch program units
+			parent.plotter.metric_units = False
+		elif parent.program_units == 'MM': # metric program units
+			parent.plotter.metric_units = True
+		parent.plotter.update()
+		parent.plot_units = parent.program_units
+
 	# axis position no offsets
 	for key, value in parent.status_position.items(): # key is label value precision
 		getattr(parent, f'{key}').setText(f'{parent.status.position[value[0]]:.{value[1]}f}')

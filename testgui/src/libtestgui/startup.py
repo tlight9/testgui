@@ -46,6 +46,7 @@ def setup_vars(parent):
 	parent.homed = ()
 	parent.program_paused = False
 	parent.motion_line = -1
+	parent.plot_units = False
 
 def setup_enables(parent):
 
@@ -489,8 +490,30 @@ def setup_plot(parent):
 		# set background color if specified
 		if parent.plot_background_color:
 			parent.plotter.background_color = parent.plot_background_color
-		print(parent.plot_background_color)
 
+		view_checkboxes = {
+			'view_dro_cb': 'action_toggle_dro',
+			'view_limits_cb': 'action_toggle_limits',
+			'view_extents_option_cb': 'action_toggle_extents_option',
+			'view_live_plot_cb': 'action_toggle_live_plot',
+			'view_velocity_cb': 'action_toggle_velocity',
+			'view_metric_units_cb': 'action_toggle_metric_units',
+			'view_program_cb': 'action_toggle_program',
+			'view_rapids_cb': 'action_toggle_rapids',
+			'view_tool_cb': 'action_toggle_tool',
+			'view_lathe_radius_cb': 'action_toggle_lathe_radius',
+			'view_dtg_cb': 'action_toggle_dtg',
+			'view_offsets_cb': 'action_toggle_offsets',
+			'view_overlay_cb': 'action_toggle_overlay'
+		}
+
+		for key, value in view_checkboxes.items():
+			if key in parent.child_names:
+				getattr(parent, f'{key}').clicked.connect(partial(getattr(actions, f'{value}'), parent))
+
+		if parent.auto_plot_units: # disable metric units
+			if 'view_metric_units_cb' in parent.child_names:
+				parent.view_metric_units_cb.setEnabled(False)
 
 def setup_hal(parent):
 	hal_labels = []
