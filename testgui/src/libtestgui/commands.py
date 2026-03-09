@@ -60,6 +60,7 @@ def add_mdi(parent): # when you click on the mdi history list widget
 
 def mdi_button(parent):
 	mdi_command = parent.sender().property('command')
+	print(mdi_command)
 	parent.status.poll()
 	if parent.status.task_state == emc.STATE_ON:
 		if parent.status.task_mode == emc.MODE_MANUAL:

@@ -333,6 +333,7 @@ def update(parent):
 		value = hal.get_value(f'flexhal.{value}')
 		getattr(parent, key).setValue(int(value))
 
+	# probing
 
 	# handle errors
 	error = parent.error.poll()

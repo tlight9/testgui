@@ -104,6 +104,7 @@ class testgui(QMainWindow):
 		startup.setup_plot(self)
 		startup.setup_hal(self)
 		startup.setup_plain_text_edits(self)
+		startup.setup_probing(self)
 
 
 		startup.setup_defaults(self)
@@ -111,7 +112,7 @@ class testgui(QMainWindow):
 		# setup and start the status update timer every 0.01 second
 		self.update_timer = QTimer()
 		self.update_timer.timeout.connect(partial(status.update, self))
-		self.timer.start(self.cycle_time) # milliseconds
+		self.update_timer.start(self.cycle_time) # milliseconds
 
 		# setup the i/o watch timer
 		self.io_watch_timer = QTimer(self)

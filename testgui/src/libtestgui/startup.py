@@ -14,6 +14,7 @@ import hal
 from libtestgui import actions
 from libtestgui import commands
 from libtestgui import dialogs
+from libtestgui import probe
 from libtestgui import utilities
 
 AXES = ['x', 'y', 'z', 'a', 'b', 'c', 'u', 'v', 'w']
@@ -47,6 +48,7 @@ def setup_vars(parent):
 	parent.program_paused = False
 	parent.motion_line = -1
 	parent.plot_units = False
+	parent.probing = False
 
 def setup_enables(parent):
 
@@ -60,6 +62,7 @@ def setup_enables(parent):
 	parent.run_controls = [] # enabled when homed, manual, file loaded
 	parent.file_load_controls = [] # disable when a program or mdi is running
 	parent.mdi_controls = []
+	parent.probe_controls = []
 
 	# STATE_ESTOP everything is disabled except the estop and file open save etc.
 	state_estop_items = ['power_pb', 'run_pb', 'run_from_line_pb',
@@ -426,9 +429,10 @@ def setup_mdi_buttons(parent):
 			if button.property('command'):
 				name = button.objectName()
 				button.clicked.connect(partial(commands.mdi_button, parent))
-				parent.state_estop_disabled.append(name)
-				parent.homed_enabled.append(name)
-				parent.mdi_controls.append(name)
+				if not name.startswith('probe_'):
+					parent.state_estop_disabled.append(name)
+					parent.homed_enabled.append(name)
+					parent.mdi_controls.append(name)
 
 def setup_jog(parent):
 	jog_buttons = []
@@ -1030,6 +1034,22 @@ def setup_plain_text_edits(parent):
 		parent.gcode_pte.viewport().installEventFilter(parent)
 		parent.gcode_pte.cursorPositionChanged.connect(partial(utilities.update_qcode_pte, parent))
 		parent.last_line = parent.status.motion_line
+
+def setup_probing(parent):
+	# any object name that starts with probe_ is disabled
+	parent.probing = False
+	for child in parent.child_names:
+		if child.startswith('probe_'):
+			getattr(parent, child).setEnabled(False)
+			parent.probe_controls.append(child)
+
+	if len(parent.probe_controls) > 0: # make sure the probe enable is present
+		if 'probing_enable_pb' in parent.child_names:
+			if not parent.probing_enable_pb.isCheckable():
+				parent.probing_enable_pb.setCheckable(True)
+			parent.probing_enable_pb.toggled.connect(partial(probe.toggle, parent))
+			parent.state_estop_disabled.append('probing_enable_pb')
+			parent.homed_enabled.append('probing_enable_pb')
 
 def setup_defaults(parent):
 	if parent.open_file and parent.open_file != '""':
