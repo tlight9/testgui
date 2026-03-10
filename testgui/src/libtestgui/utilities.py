@@ -152,18 +152,15 @@ def home_all_check(parent):
 	return True
 
 def update_home_controls(parent):
-	print('update_home_controls')
 	parent.status.poll()
 	if parent.status.task_state == emc.STATE_ON:
 		for joint in range(parent.joints):
 			if parent.status.joint[joint]['homed']:
-				print('homed')
 				if f'home_pb_{joint}' in parent.child_names:
 					getattr(parent, f'home_pb_{joint}').setEnabled(False)
 				if f'unhome_pb_{joint}' in parent.child_names:
 					getattr(parent, f'unhome_pb_{joint}').setEnabled(True)
 			elif not parent.status.joint[joint]['homed']:
-				print('not homed')
 				if f'home_pb_{joint}' in parent.child_names:
 					getattr(parent, f'home_pb_{joint}').setEnabled(True)
 				if f'unhome_pb_{joint}' in parent.child_names:
@@ -171,7 +168,6 @@ def update_home_controls(parent):
 
 		# all joints homed
 		if all(parent.status.homed[:parent.joints]):
-			print('all joints homed')
 			if 'home_all_pb' in parent.child_names:
 				parent.home_all_pb.setEnabled(False)
 			if 'unhome_all_pb' in parent.child_names:
@@ -181,7 +177,6 @@ def update_home_controls(parent):
 
 		# not all joints homed
 		if not any(parent.status.homed[:parent.joints]):
-			print('not all joints homed')
 			if 'home_all_pb' in parent.child_names and home_all_check(parent):
 				parent.home_all_pb.setEnabled(True)
 			if 'unhome_all_pb' in parent.child_names:
