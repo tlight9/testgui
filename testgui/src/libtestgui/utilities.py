@@ -281,16 +281,16 @@ def var_value_changed(parent, value):
 	parent.cmd = f'#{variable}={value}'
 	QTimer.singleShot(500, lambda: sync_var_file(parent))
 
-def sync_var_file(parent):
-	if parent.status.task_state == emc.STATE_ON:
-		original_mode = parent.status.task_mode
+def sync_var_file(parent): # only update var file if in manual mode
+	if (parent.status.task_state == emc.STATE_ON
+		and parent.status.task_mode != emc.MODE_MANUAL):
 		if parent.status.task_mode != emc.MODE_MDI:
 			parent.command.mode(emc.MODE_MDI)
 			parent.command.wait_complete()
 		parent.command.mdi(parent.cmd)
 		parent.command.wait_complete()
 		parent.command.task_plan_synch()
-		parent.command.mode(original_mode)
+		parent.command.mode(emc.MODE_MANUAL)
 		parent.command.wait_complete()
 
 def var_file_watch(parent):
