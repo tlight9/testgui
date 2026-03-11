@@ -14,6 +14,9 @@ INCREMENTS
 QSS
 RESOURCES
 
+[HAL]
+POSTGUI_HALFILE
+
 ** Menus **
 * File *
 Open

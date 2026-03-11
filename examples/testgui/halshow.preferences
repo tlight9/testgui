@@ -5,26 +5,8 @@ placeFrames 0.3
 set ::ratio 0.3
 set ::old_w_leftf 160
 set ::watchlist {
-    pin+flexhal.hal-bit-lb
-    pin+flexhal.hal-float-lb
-    pin+flexhal.hal-s32-lb
-    pin+flexhal.hal-u32-lb
-    pin+flexhal.hal-bool-tf-lb
-    pin+flexhal.hal-ms-lb
-    pin+flexhal.hal-pb
-    pin+flexhal.hal-aways-on-pb
-    pin+flexhal.hal-all-homed-pb
-    pin+flexhal.hal-power-on-pb
-    pin+flexhal.hal-confirm-pb
-    pin+flexhal.hal-rb1
-    pin+flexhal.hal-rb2
-    pin+flexhal.hal-cb
-    pin+flexhal.hal-s32-sb
-    pin+flexhal.hal-u32-sb
-    pin+flexhal.hal-dbl-sb
-    pin+flexhal.hal-s32-sd
-    pin+flexhal.hal-io-pb
     pin+flexhal.hal-io-cb
+    pin+flexhal.hal-io-pb
     pin+flexhal.hal-io-sb
     pin+flexhal.hal-io-sd
 }

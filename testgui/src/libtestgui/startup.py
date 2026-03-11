@@ -1020,6 +1020,28 @@ def setup_hal(parent):
 				i += 1
 			parent.hal_ms_labels[label_name] = [pin_name, text_list]
 
+def setup_hal_io_state(parent): # this updates any hal i/o items at startup
+	# key is the object name value is the hal pin name
+	for key, value in parent.hal_io_check.items():
+		checked_state = getattr(parent, key).isChecked()
+		hal_state = getattr(parent.halcomp, value)
+		if checked_state != hal_state:
+			#getattr(parent, key).setChecked(hal_state)
+			setattr(parent.halcomp, value, checked_state)
+
+	for key, value in parent.hal_io_int.items():
+		obj_value = getattr(parent, key).value()
+		hal_value = getattr(parent.halcomp, value)
+		if obj_value != hal_value:
+			setattr(parent.halcomp, value, obj_value)
+
+	for key, value in parent.hal_io_float.items():
+		obj_value = getattr(parent, key).value()
+		hal_value = getattr(parent.halcomp, value)
+		if obj_value != hal_value:
+			setattr(parent.halcomp, value, obj_value)
+
+
 def setup_set_var(parent):
 	# variables are floats so only put them in a QDoubleSpinBox
 	var_file = os.path.join(parent.config_path, parent.var_file)
@@ -1099,6 +1121,21 @@ def setup_probing(parent):
 			parent.state_estop_disabled.append('probing_enable_pb')
 			parent.state_estop_reset_disabled.append('probing_enable_pb')
 			parent.homed_enabled.append('probing_enable_pb')
+
+def load_postgui(parent): # load post gui hal and tcl files if found
+	if parent.postgui_halfiles:
+		for f in parent.postgui_halfiles:
+			if os.path.exists(os.path.join(parent.config_path, f)):
+				if f.lower().endswith('.tcl'):
+					res = os.spawnvp(os.P_WAIT, "haltcl", ["haltcl", "-i", parent.ini_path, f])
+				else:
+					res = os.spawnvp(os.P_WAIT, "halcmd", ["halcmd", "-i", parent.ini_path, "-f", f])
+				if res: raise SystemExit(res)
+			else:
+				msg = (f'The POSTGUI_HALFILE\n'
+				f'{os.path.join(parent.config_path, f)}\n'
+				'was not found in the configuration directory.')
+				dialogs.warn_msg_ok(parent, msg, 'Configuration Error')
 
 def setup_defaults(parent):
 	if parent.open_file and parent.open_file != '""':

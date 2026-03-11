@@ -55,7 +55,7 @@ class testgui(QMainWindow):
 			gui_path = os.path.join(os.path.dirname(self.status.ini_filename), gui_file)
 			loadUi(gui_path, self)
 
-		self.setWindowTitle('Test Commit 88')
+		self.setWindowTitle('Test Commit 89')
 
 		# read the ini settings
 		readini.read(self)
@@ -105,11 +105,14 @@ class testgui(QMainWindow):
 		startup.setup_jog(self)
 		startup.setup_plot(self)
 		startup.setup_hal(self)
+		startup.setup_hal_io_state(self)
 		startup.setup_set_var(self)
 		startup.setup_watch_var(self)
 		startup.setup_plain_text_edits(self)
 		startup.setup_probing(self)
 
+		# loading the post gui files can only happen once
+		startup.load_postgui(self)
 
 		startup.setup_defaults(self)
 
