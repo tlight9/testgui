@@ -160,6 +160,17 @@ def read(parent):
 	# plotter units follow current program units
 	parent.auto_plot_units = parent.inifile.find('FLEXGUI', 'PLOT_UNITS') or False
 
+	# ***** [EMCIO] Section *****
+	# this ini file items will cause EMC to fail to load if missing
+	parent.tool_table = parent.inifile.find('EMCIO', 'TOOL_TABLE')
+
+	# ***** [RS274NGC] Section *****
+	# this ini file items will cause EMC to fail to load if missing
+	parent.var_file = parent.inifile.find('RS274NGC', 'PARAMETER_FILE')
+
+	# ***** [HAL] Section *****
+	# this ini file items will cause EMC to fail to load if missing
+	parent.postgui_halfiles = parent.inifile.findall('HAL', 'POSTGUI_HALFILE')
 
 	# ***** [KINS] Section *****
 	# this ini file items will cause EMC to fail to load if missing

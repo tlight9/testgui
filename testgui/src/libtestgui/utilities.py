@@ -1,5 +1,6 @@
 import re, os
 
+from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QColor, QTextFormat
 from PyQt6.QtWidgets import QFileDialog, QTextEdit
 
@@ -274,6 +275,23 @@ def update_hal_spinbox(parent, value):
 
 def update_hal_slider(parent, value):
 	setattr(parent.halcomp, parent.sender().property('pin_name'), value)
+
+def var_value_changed(parent, value):
+	variable = parent.sender().property('variable')
+	parent.cmd = f'#{variable}={value}'
+	QTimer.singleShot(500, lambda: sync_var_file(parent))
+
+def sync_var_file(parent):
+	if parent.status.task_state == emc.STATE_ON:
+		original_mode = parent.status.task_mode
+		if parent.status.task_mode != emc.MODE_MDI:
+			parent.command.mode(emc.MODE_MDI)
+			parent.command.wait_complete()
+		parent.command.mdi(parent.cmd)
+		parent.command.wait_complete()
+		parent.command.task_plan_synch()
+		parent.command.mode(original_mode)
+		parent.command.wait_complete()
 
 def change_page(parent):
 	object_name = parent.sender().property('change_page')

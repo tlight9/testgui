@@ -1020,6 +1020,39 @@ def setup_hal(parent):
 				i += 1
 			parent.hal_ms_labels[label_name] = [pin_name, text_list]
 
+def setup_set_var(parent):
+	# variables are floats so only put them in a QDoubleSpinBox
+	var_file = os.path.join(parent.config_path, parent.var_file)
+	with open(var_file, 'r') as f:
+		var_list = f.readlines()
+
+	parent.set_var = {}
+	for child in parent.findChildren(QDoubleSpinBox):
+		if child.property('function') == 'set_var':
+			var = child.property('variable')
+			found = False
+			if var is not None:
+				for line in var_list:
+					if line.startswith(var):
+						child.setValue(float(line.split()[1]))
+						found = True
+						child.valueChanged.connect(partial(utilities.var_value_changed, parent))
+						parent.set_var[child.objectName()] = var
+						parent.state_estop_disabled.append(child.objectName())
+						parent.state_estop_reset_disabled.append(child.objectName())
+						parent.homed_enabled.append(child.objectName())
+						child.setEnabled(False)
+
+						break
+				if not found:
+					child.setEnabled(False)
+					msg = (f'The variable {var} was not found\n'
+					f'in the variables file {parent.var_file}\n'
+					f'the QDoubleSpinBox "{child.objectName()}"\n'
+					'will not contain value from the\n'
+					'parameters file and will be disabled')
+					dialogs.warn_msg_ok(parent, msg, 'Error')
+
 def setup_plain_text_edits(parent):
 	# for gcode_pte update
 	parent.motion_line = -1

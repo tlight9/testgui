@@ -98,6 +98,9 @@ HAL Spinbox, Double Spinbox, Slider
 HAL Progressbars
 HAL I/O
 
+** VARIABLES **
+Set Variables
+
 ** Miscellaneous Items **
 Error Viewer
 
