@@ -1,0 +1,7 @@
+import inspect
+
+# inspect.stack()[1] is the frame of the caller
+frame = inspect.stack()[1]
+print(f'Called from: {frame.filename}')
+print(f'Line number: {frame.lineno}')
+print(f'Code: {frame.code_context[0].strip()}')
