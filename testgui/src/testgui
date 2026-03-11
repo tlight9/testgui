@@ -55,7 +55,7 @@ class testgui(QMainWindow):
 			gui_path = os.path.join(os.path.dirname(self.status.ini_filename), gui_file)
 			loadUi(gui_path, self)
 
-		self.setWindowTitle('Test Commit 74')
+		self.setWindowTitle('Test Commit 88')
 
 		# read the ini settings
 		readini.read(self)
