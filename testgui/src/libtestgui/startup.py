@@ -1053,6 +1053,26 @@ def setup_set_var(parent):
 					'parameters file and will be disabled')
 					dialogs.warn_msg_ok(parent, msg, 'Error')
 
+def setup_watch_var(parent):
+	parent.watch_var = {}
+	for child in parent.findChildren(QLabel):
+		if child.property('function') == 'watch_var':
+			var = child.property('variable')
+			prec = child.property('precision')
+			prec = prec if prec is not None else 6
+			name = child.objectName()
+			parent.watch_var[name] = [var, prec]
+
+	if len(parent.watch_var) > 0: # update the labels
+		var_file = os.path.join(parent.config_path, parent.var_file)
+		with open(var_file, 'r') as f:
+			var_list = f.readlines()
+		for key, value in parent.watch_var.items():
+			for line in var_list:
+				if line.startswith(value[0]):
+					getattr(parent, key).setText(f'{float(line.split()[1]):.{value[1]}f}')
+
+
 def setup_plain_text_edits(parent):
 	# for gcode_pte update
 	parent.motion_line = -1

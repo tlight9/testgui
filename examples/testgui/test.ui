@@ -760,6 +760,19 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_28">
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+             <property name="function" stdset="0">
+              <string>watch_var</string>
+             </property>
+             <property name="variable" stdset="0">
+              <string>1000</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
