@@ -1173,7 +1173,7 @@ def setup_defaults(parent):
 					getattr(parent, item).blockSignals(False)
 		else:
 			view_checkboxes = {
-				'view_dro_cb': ['action_toggle_dro', 'enable_dro'],
+				'view_dro_cb': ['action_toggle_dro', 'show_dro'],
 				'view_limits_cb': ['action_toggle_limits', 'show_limits'],
 				'view_extents_option_cb': ['action_toggle_extents_option', 'show_extents_option'],
 				'view_live_plot_cb': ['action_toggle_live_plot', 'show_live_plot'],
