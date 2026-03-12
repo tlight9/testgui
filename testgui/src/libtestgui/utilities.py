@@ -282,6 +282,7 @@ def var_value_changed(parent, value):
 	QTimer.singleShot(500, lambda: sync_var_file(parent))
 
 def sync_var_file(parent): # only update var file if in manual mode and homed
+	parent.status.poll()
 	if (parent.status.task_state == emc.STATE_ON
 		and parent.status.task_mode == emc.MODE_MANUAL
 		and parent.status.motion_mode == emc.TRAJ_MODE_TELEOP
