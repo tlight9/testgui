@@ -297,7 +297,10 @@ def sync_var_file(parent): # only update var file if in manual mode and homed
 
 def var_file_watch(parent):
 	parent.status.poll()
-	if parent.status.task_mode == emc.MODE_MANUAL:
+	if (parent.status.task_state == emc.STATE_ON
+		and parent.status.task_mode == emc.MODE_MANUAL
+		and parent.status.motion_mode == emc.TRAJ_MODE_TELEOP
+		and parent.status.interp_state == emc.INTERP_IDLE):
 		var_current_time = os.stat(os.path.join(parent.config_path, parent.var_file)).st_mtime
 		if parent.var_mod_time != var_current_time:
 			var_file = os.path.join(parent.config_path, parent.var_file)
