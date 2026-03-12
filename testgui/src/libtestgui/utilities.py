@@ -294,20 +294,22 @@ def sync_var_file(parent): # only update var file if in manual mode
 		parent.command.wait_complete()
 
 def var_file_watch(parent):
-	var_current_time = os.stat(os.path.join(parent.config_path, parent.var_file)).st_mtime
-	if parent.var_mod_time != var_current_time:
-		var_file = os.path.join(parent.config_path, parent.var_file)
-		with open(var_file, 'r') as f:
-			var_list = f.readlines()
-		for key, value in parent.watch_var.items():
-			for line in var_list:
-				if line.startswith(value[0]):
-					getattr(parent, key).setText(f'{float(line.split()[1]):.{value[1]}f}')
-		for key, value in parent.set_var.items():
-			for line in var_list:
-				if line.split()[0] == value:
-					getattr(parent, key).setValue(float(line.split()[1]))
-		parent.var_mod_time = var_current_time
+	parent.status.poll()
+	if parent.status.task_mode == emc.MODE_MANUAL:
+		var_current_time = os.stat(os.path.join(parent.config_path, parent.var_file)).st_mtime
+		if parent.var_mod_time != var_current_time:
+			var_file = os.path.join(parent.config_path, parent.var_file)
+			with open(var_file, 'r') as f:
+				var_list = f.readlines()
+			for key, value in parent.watch_var.items():
+				for line in var_list:
+					if line.startswith(value[0]):
+						getattr(parent, key).setText(f'{float(line.split()[1]):.{value[1]}f}')
+			for key, value in parent.set_var.items():
+				for line in var_list:
+					if line.split()[0] == value:
+						getattr(parent, key).setValue(float(line.split()[1]))
+			parent.var_mod_time = var_current_time
 
 def change_page(parent):
 	object_name = parent.sender().property('change_page')
